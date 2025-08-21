@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sang dev - Shop Mã Nguồn Chất</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --accent: #fd79a8;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .admin-report-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--warning);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .admin-report-btn:hover {
+            background: #ffeaa7;
+            transform: translateY(-2px);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .tagline a {
+            color: var(--warning);
+            text-decoration: none;
+        }
+        
+        .tagline a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            padding-bottom: 4rem;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            background: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .product-description {
+            color: #636e72;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 1.2rem;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+        
+        .product-rating {
+            color: var(--warning);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .pagination-btn {
+            padding: 0.7rem 1.2rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .pagination-btn:hover:not(.active) {
+            background: #f1f1f1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #636e72;
+        }
+        
+        .modal-product-image {
+            height: 300px;
+            background: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .modal-product-info {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-product-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .modal-product-price {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-product-description {
+            color: #636e72;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-product-features {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-product-features ul {
+            list-style-type: none;
+            padding-left: 1rem;
+        }
+        
+        .modal-product-features li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .modal-product-features li:before {
+            content: "✓";
+            color: var(--success);
+            position: absolute;
+            left: 0;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-demo {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-demo:hover {
+            background: var(--primary);
+        }
+        
+        .btn-download {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-download:hover {
+            opacity: 0.9;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--dark);
+            color: white;
+            margin-top: 3rem;
+        }
+        
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .category-btn {
+            padding: 0.7rem 1.5rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .category-btn:hover:not(.active) {
+            background: #f1f1f1;
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .modal-product-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .admin-report-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 1rem;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="admin-report-btn" id="adminReportBtn">
+            <i class="fas fa-exclamation-circle"></i> Báo cáo Admin
+        </button>
+        <div class="logo">shop dev sang</div>
+        <div class="tagline">
+            <p>chào mừng bạn đến với dịch vụ của tôi– một lập trình viên yêu thích xây dựng website sáng tạo.</p>
+            <p>Mình chuyên phát triển website, ứng dụng với giao diện đẹp mắt và tối ưu hiệu suất.</p>
+            <p>Bạn có thể xem thêm về mình <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank">tại đây</a>.</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="category-filter" id="categoryFilter">
+            <button class="category-btn active" data-category="all">Tất cả</button>
+            <button class="category-btn" data-category="free">Miễn phí</button>
+            <button class="category-btn" data-category="premium">Trả phí</button>
+            <button class="category-btn" data-category="website">Website</button>
+            <button class="category-btn" data-category="portfolio">Portfolio</button>
+        </div>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Sản phẩm sẽ được thêm bằng JavaScript -->
+        </div>
+        
+        <!-- Phân trang -->
+        <div class="pagination" id="pagination">
+            <!-- Nút phân trang sẽ được thêm bằng JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Modal chi tiết sản phẩm -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chi tiết sản phẩm</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalProductContent">
+                <!-- Nội dung sản phẩm sẽ được thêm bằng JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal báo cáo admin -->
+    <div class="modal" id="adminReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Liên hệ Admin</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+
+            <div class="contact-info" style="text-align: center; padding: 20px;">
+                <!-- Avatar Admin -->
+                <img src="admin.jpg" alt="Ảnh Admin" 
+                     style="width:140px; height:140px; border-radius:50%; object-fit: cover; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:15px;">
+
+                <!-- Thông tin -->
+                <h3 style="margin: 10px 0;">sang_dev</h3>
+                <p>nếu lỗi hảy bảo admin để khắc phục nhanh nhất</p>
+                <p>lun hổ trợ tận tình</p>
+                
+
+                <!-- Liên hệ mạng xã hội -->
+                <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank" 
+                       style="background:#1877f2; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none;">
+                       Facebook
+                    </a>
+                    <a href="#" target="_blank" 
+                       style="background:#06c755; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none;">
+                       Zalo
+                    </a>
+                    <a href="mailto:nguyenhongsang0207@gmail.com" 
+                       style="background:#ff5a5f; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none;">
+                       Gmail
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 sang_dev - Shop mã nguồn chất lượng cao</p>
+        
+    </footer>
+
+    <script>
+        // Lưu trữ dữ liệu sản phẩm
+        const products = [
+            {
+                id: 1,
+                title: "Portfolio Creative",
+                description: "Mẫu portfolio sáng tạo cho cá nhân với thiết kế hiện đại",
+                detailedDescription: "Mẫu portfolio đẹp mắt với thiết kế hiện đại, phù hợp cho các nhà phát triển, nhà thiết kế và những người sáng tạo muốn trưng bày công việc của họ.",
+                price: "Miễn phí",
+                demoUrl: "#",
+                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
+                imageUrl: "https://placehold.co/600x400/6c5ce7/white?text=Portfolio+Creative",
+                category: ["free", "portfolio"],
+                features: [
+                    "Thiết kế responsive",
+                    "Tối ưu hóa SEO",
+                    "Hiệu ứng scroll mượt mà",
+                    "Dễ dàng tùy biến"
+                ],
+                rating: 4.8,
+                downloads: 1250
+            },
+           ]
+        
+        // Biến lưu trữ sản phẩm đang được chọn
+        let currentProduct = null;
+        let currentPage = 1;
+        let currentCategory = 'all';
+        const productsPerPage = 6;
+        
+        // Lắng nghe sự kiện khi trang web đã tải xong
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hiển thị sản phẩm và phân trang
+            displayProductsForPage(currentPage);
+            setupPagination();
+            
+            // Đóng modal
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                });
+            });
+            
+            // Xử lý nút báo cáo admin
+            document.getElementById('adminReportBtn').addEventListener('click', function() {
+                document.getElementById('adminReportModal').style.display = 'flex';
+            });
+            
+            // Xử lý bộ lọc danh mục
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.getAttribute('data-category');
+                    currentPage = 1;
+                    displayProductsForPage(currentPage);
+                    setupPagination();
+                });
+            });
+            
+            // Đóng modal khi click bên ngoài
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+        });
+        
+        // Lọc sản phẩm theo danh mục
+        function filterProducts() {
+            if (currentCategory === 'all') {
+                return products;
+            }
+            return products.filter(product => product.category.includes(currentCategory));
+        }
+        
+        // Hiển thị sản phẩm theo trang
+        function displayProductsForPage(page) {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+            
+            const filteredProducts = filterProducts();
+            const startIndex = (page - 1) * productsPerPage;
+            const endIndex = Math.min(startIndex + productsPerPage, filteredProducts.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const product = filteredProducts[i];
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.setAttribute('data-id', product.id);
+                
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.imageUrl}" alt="${product.title}">
+                        ${product.price === "Miễn phí" ? '<div class="product-badge">MIỄN PHÍ</div>' : ''}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-meta">
+                            <div class="product-rating">
+                                ${generateStarRating(product.rating)}
+                            </div>
+                            <div class="product-downloads">
+                                <i class="fas fa-download"></i> ${product.downloads.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                productCard.addEventListener('click', function() {
+                    currentProduct = product;
+                    showProductModal(currentProduct);
+                });
+                
+                productsGrid.appendChild(productCard);
+            }
+        }
+        
+        // Tạo đánh giá sao
+        function generateStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars + ` ${rating}`;
+        }
+        
+        // Thiết lập phân trang
+        function setupPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            const filteredProducts = filterProducts();
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            
+            if (totalPages <= 1) return;
+            
+            // Nút trang trước
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'pagination-btn';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevBtn.addEventListener('click', function() {
+                    currentPage--;
+                    displayProductsForPage(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(prevBtn);
+            }
+            
+            // Các nút trang
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'pagination-btn';
+                if (i === currentPage) {
+                    pageBtn.classList.add('active');
+                }
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', function() {
+                    currentPage = i;
+                    displayProductsForPage(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(pageBtn);
+            }
+            
+            // Nút trang sau
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'pagination-btn';
+                nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextBtn.addEventListener('click', function() {
+                    currentPage++;
+                    displayProductsForPage(currentPage);
+                    setupPagination();
+                    window.scrollTo(0, 0);
+                });
+                pagination.appendChild(nextBtn);
+            }
+        }
+        
+        // Hiển thị modal chi tiết sản phẩm
+        function showProductModal(product) {
+            const modalContent = document.getElementById('modalProductContent');
+            modalContent.innerHTML = `
+                <div class="modal-product-image">
+                    <img src="${product.imageUrl}" alt="${product.title}">
+                </div>
+                <div class="modal-product-details">
+                    <div>
+                        <div class="modal-product-info">
+                            <h3 class="modal-product-title">${product.title}</h3>
+                            <div class="modal-product-price">${product.price}</div>
+                            <p class="modal-product-description">${product.detailedDescription}</p>
+                        </div>
+                        <div class="modal-product-features">
+                            <h4>Tính năng nổi bật</h4>
+                            <ul>
+                                ${product.features.map(feature => `<li>${feature}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="modal-actions">
+                            <a href="${product.demoUrl}" target="_blank" class="btn btn-demo">
+                                <i class="fas fa-external-link-alt"></i> Xem Demo
+                            </a>
+                            <button class="btn btn-download" onclick="window.location.href='${product.fileUrl}'">
+                                <i class="fas fa-download"></i> Tải Về
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('productModal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
