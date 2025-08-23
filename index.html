@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -707,14 +708,29 @@
             </div>
 
             <div class="contact-info" style="text-align: center; padding: 20px;">
-                <!-- Avatar Admin -->
-                <img src="admin.jpg" alt="Ảnh Admin" 
-                     style="width:140px; height:140px; border-radius:50%; object-fit: cover; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:15px;">
+    <!-- Avatar Admin -->
+    <img id="adminAvatar" src="admin.jpg" alt="Ảnh Admin" 
+         style="width:140px; height:140px; border-radius:50%; object-fit: cover; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:15px; cursor:pointer;">
 
-                <!-- Thông tin -->
-                <h3 style="margin: 10px 0; color: var(--primary);">sang_dev</h3>
-                <p>Nếu có lỗi hãy báo admin để khắc phục nhanh nhất</p>
-                <p>Luôn hỗ trợ tận tình, nhiệt tình</p>
+    <!-- Thông tin -->
+    <h3 style="margin: 10px 0; color: var(--primary);">sang_dev</h3>
+    <p>Nếu có lỗi hãy báo admin để khắc phục nhanh nhất</p>
+    <p>Luôn hỗ trợ tận tình, nhiệt tình</p>
+</div>
+
+<script>
+    const avatar = document.getElementById('adminAvatar');
+    let clickCount = 0;
+
+    avatar.addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 10) {
+            // Chuyển tới trang khác
+            window.location.href = "pass.html"; // thay bằng URL bạn muốn
+        }
+    });
+</script>
+
                 
 
                 <!-- Liên hệ mạng xã hội -->
