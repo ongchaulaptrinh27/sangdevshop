@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -755,7 +754,7 @@
     </div>
 
     <script>
-    // 👉 Lưu trữ dữ liệu sản phẩm
+    // 👉 Lưu trữ dữ liệu sản phẩm (đã thêm thuộc tính 'pinned' cho ghim sản phẩm chính)
      const products = [
             {
                 id: 1,
@@ -774,7 +773,8 @@
                     ""
                 ],
                 rating: 4.8,
-                downloads: 12
+                downloads: 12,
+                pinned: false  // Ghim sản phẩm này (bạn có thể chỉnh sửa true/false cho từng sản phẩm)
             },
             {
                 id: 2,
@@ -793,7 +793,8 @@
                     "vv"
                 ],
                 rating: 4.5,
-                downloads: 1
+                downloads: 1,
+                pinned: false  // Ghim sản phẩm này
             },
              {
                 id: 3,
@@ -812,7 +813,8 @@
                     ""
                 ],
                 rating: 4.2,
-                downloads: 7
+                downloads: 7,
+                pinned: false
             },
             {
                 id: 4,
@@ -831,7 +833,8 @@
                     ""
                 ],
                 rating: 4.8,
-                downloads: 1250
+                downloads: 1250,
+                pinned: false
             },
             {
                 id: 5,
@@ -848,7 +851,8 @@
                     "",
                 ],
                 rating: 4.8,
-                downloads: 2
+                downloads: 2,
+                pinned: false
             },
              {
                 id: 6,
@@ -866,7 +870,8 @@
             
                 ],
                 rating: 4.5,
-                downloads: 5
+                downloads: 5,
+                pinned: false
             },
              {
                 id: 7,
@@ -885,7 +890,8 @@
                     
                 ],
                 rating: 4.0,
-                downloads: 3
+                downloads: 3,
+                pinned: false
             },
          {
                 id: 8,
@@ -904,7 +910,8 @@
                     
                 ],
                 rating: 4.0,
-                downloads: 2
+                downloads: 2,
+                pinned: false
             },
          {
                 id: 9,
@@ -923,7 +930,8 @@
                     
                 ],
                 rating: 4.1,
-                downloads: 2
+                downloads: 2,
+                pinned: false
             },
           {
                 id: 10,
@@ -942,7 +950,8 @@
                     
                 ],
                 rating: 4.1,
-                downloads: 0
+                downloads: 0,
+                pinned: false  // Ghim sản phẩm này
             },
          {
                 id: 11,
@@ -962,7 +971,8 @@
                     
                 ],
                 rating: 4.1,
-                downloads: 1
+                downloads: 1,
+                pinned: true
             },
          
            ]
@@ -1042,11 +1052,20 @@
         }
     });
 
-    // 👉 Lọc sản phẩm theo danh mục
+    // 👉 Lọc sản phẩm theo danh mục và sắp xếp (ghim trước, sau đó sản phẩm mới nhất trước)
     function filterProducts() {
-        return currentCategory === 'all'
+        let filtered = currentCategory === 'all'
             ? products
             : products.filter(p => p.category.includes(currentCategory));
+
+        // Sắp xếp: Ghim trước (pinned: true), sau đó sắp xếp theo id giảm dần (sản phẩm mới nhất trước)
+        filtered.sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return b.id - a.id;  // Sắp xếp id giảm dần cho các sản phẩm không ghim
+        });
+
+        return filtered;
     }
 
     // 👉 Hiển thị sản phẩm theo trang
@@ -1069,6 +1088,7 @@
                 <div class="product-image">
                     <img src="${p.imageUrl}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Ảnh+lỗi'">
                     ${p.price === "Miễn phí" ? '<div class="product-badge">MIỄN PHÍ</div>' : ''}
+                    ${p.pinned ? '<div class="product-badge" style="background: var(--warning);">GHIM</div>' : ''}
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">${p.title}</h3>
