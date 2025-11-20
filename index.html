@@ -1,1417 +1,1406 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sang dev - Shop Mã Nguồn Chất</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Favicon -->
-<link rel="icon" href="https://sangdevshop.vercel.app/admin.jpg" type="image/png">
+<meta charset="UTF-8">
+<title>SANG DEV SHOP - MÃ NGUỒN PRIVATE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0d0d1e;color:#fff;min-height:100vh;background:linear-gradient(135deg,#0f0f1e,#1a1a3a);overflow-x:hidden;}
+.container{max-width:1300px;margin:0 auto;padding:20px;}
+nav{background:rgba(20,20,40,0.95);backdrop-filter:blur(12px);position:fixed;top:0;width:100%;z-index:1000;padding:15px 0;box-shadow:0 4px 30px rgba(0,255,255,0.1);}
+nav .container{display:flex;justify-content:space-between;align-items:center;}
+.logo{font-size:1.8em;font-weight:700;background:linear-gradient(45deg,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;}
+nav a{color:#fff;margin-left:20px;text-decoration:none;transition:0.3s;}
+nav a:hover{color:#00ffff;}
+.card{background:rgba(255,255,255,0.05);border-radius:16px;padding:20px;margin:15px 0;border:1px solid rgba(0,255,255,0.2);backdrop-filter:blur(10px);transition:0.3s;}
+.card:hover{transform:translateY(-8px);box-shadow:0 15px 40px rgba(0,255,255,0.15);}
+.btn{padding:12px 28px;border:none;border-radius:10px;cursor:pointer;font-weight:600;margin:5px;transition:0.3s;}
+.btn-primary{background:#00ffff;color:#000;}
+.btn-primary:hover{background:#00cccc;}
+.btn-danger{background:#ff2d55;}
+.btn-success{background:#00ff88;color:#000;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px;margin-top:90px;}
+h1,h2,h3{text-align:center;margin:20px 0;font-size:2.2em;background:linear-gradient(45deg,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;}
+input,textarea,select{padding:12px;border-radius:8px;border:none;background:rgba(255,255,255,0.1);color:#fff;margin:8px 0;width:100%;outline:none;}
+.hidden{display:none !important;}
+#adminPanel{background:rgba(255,0,100,0.1);padding:20px;border-radius:16px;margin:20px 0;}
+#loading{text-align:center;padding:50px;font-size:1.5em;color:#00ffff;}
+code{background:#000;padding:2px 8px;border-radius:4px;}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.carousel-container{overflow:hidden;border-radius:12px;margin:10px 0;position:relative;height:220px;}
+.carousel{animation:scroll 20s linear infinite;display:flex;width:200%;}
+.carousel img{width:100%;height:220px;object-fit:cover;flex-shrink:0;}
+#usersList .btn {
+  border-radius:12px !important;
+  font-weight:600 !important;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  transition:all 0.3s !important;
+}
+#usersList .btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 8px 25px rgba(0,255,255,0.4) !important;
+}
 
-    <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --dark: #2d3436;
-            --light: #f5f6fa;
-            --accent: #fd79a8;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
-        }
+/* Sidebar */
+.sidebar {
+  position:fixed;left:0;top:0;height:100vh;width:280px;background:rgba(15,15,35,0.95);backdrop-filter:blur(15px);
+  border-right:1px solid rgba(0,255,255,0.2);z-index:999;transition:0.4s;padding-top:20px;overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar {width:6px;}
+.sidebar::-webkit-scrollbar-track {background:transparent;}
+.sidebar::-webkit-scrollbar-thumb {background:#00ffff;border-radius:3px;}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+.sidebar-header {
+  text-align:center;padding:20px 15px;border-bottom:1px solid rgba(0,255,255,0.2);
+}
+.sidebar-header .logo {
+  font-size:2em;font-weight:700;background:linear-gradient(45deg,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;
+}
+.sidebar-header p {font-size:0.9em;color:#888;margin-top:8px;}
 
-        body {
-            background-color: #f9f9f9;
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-        }
+.sidebar-menu {padding:20px 15px;}
+.section-title {color:#00ffff;font-size:0.9em;text-transform:uppercase;letter-spacing:1px;margin:25px 0 10px;font-weight:600;}
+.menu-item {
+  display:flex;justify-content:space-between;align-items:center;padding:12px 15px;border-radius:10px;margin:6px 0;
+  cursor:pointer;transition:0.3s;background:rgba(255,255,255,0.05);
+}
+.menu-item:hover {background:rgba(0,255,255,0.15);transform:translateX(5px);}
+.menu-item i {margin-right:12px;color:#00ffff;}
+.arrow {font-size:0.8em;transition:0.3s;}
 
-        /* Sidebar cố định */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 260px;
-            height: 100vh;
-            background: #fff;
-            color: #333;
-            padding: 15px;
-            box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-            z-index: 2000;
-            overflow-y: auto;
-        }
+.submenu {
+  max-height:0;overflow:hidden;transition:max-height 0.4s ease;background:rgba(0,0,0,0.3);border-radius:8px;margin:5px 0;
+}
+.submenu.active {max-height:300px;padding:10px 0;}
+.submenu a {
+  display:block;padding:10px 15px 10px 50px;color:#ccc;text-decoration:none;transition:0.3s;
+}
+.submenu a:hover {color:#00ffff;background:rgba(0,255,255,0.1);}
 
-        /* Wrapper chính */
-        .main-wrapper {
-            margin-left: 260px;
-            width: calc(100% - 260px);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+/* Main content */
+.main-wrapper {margin-left:280px;min-height:100vh;transition:0.4s;}
+header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40px;text-align:center;border-bottom:1px solid rgba(0,255,255,0.2);}
+.tagline {max-width:900px;margin:25px auto;line-height:1.8;font-size:1.1em;color:#ddd;}
+.tagline a {color:#00ffff;text-decoration:underline;}
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-            text-align: center;
-        }
+.admin-report-btn {
+  position:fixed;top:20px;right:20px;background:#ff3b30;color:#fff;padding:12px 20px;border:none;border-radius:50px;
+  cursor:pointer;font-weight:600;z-index:998;box-shadow:0 4px 15px rgba(255,59,48,0.4);transition:0.3s;
+}
+.admin-report-btn:hover {transform:scale(1.05);box-shadow:0 8px 25px rgba(255,59,48,0.6);}
 
-        /* Admin button */
-        .admin-report-btn {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: var(--warning);
-            color: var(--dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
-        }
-        .admin-report-btn:hover {
-            background: #ffeaa7;
-            transform: translateY(-2px);
-        }
+/* Mobile */
+.mobile-menu-btn {
+  display:none;position:fixed;top:15px;left:15px;background:#00ffff;color:#000;padding:12px;border-radius:50%;z-index:999;
+  font-size:1.4em;cursor:pointer;box-shadow:0 4px 15px rgba(0,255,255,0.4);
+}
+@media (max-width: 992px) {
+  .sidebar {left:-280px;}
+  .main-wrapper {margin-left:0;}
+  .mobile-menu-btn {display:block;}
+  .sidebar.open {left:0;}
+}
 
-        /* Logo & tagline */
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-        .tagline {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            text-align: center;
-            max-width: 800px;
-            line-height: 1.5;
-        }
-        .tagline p {
-            margin-bottom: 0.8rem;
-        }
-        .tagline a {
-            color: var(--warning);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .tagline a:hover {
-            text-decoration: underline;
-        }
+/* Modal */
+.modal {display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;}
+.modal.active {display:flex;}
+.modal-content {background:#1a1a3a;width:90%;max-width:500px;border-radius:16px;overflow:hidden;animation:zoomIn 0.4s;}
+.modal-header {background:#00ffff;color:#000;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h2 {margin:0;}
+.close-modal {background:none;border:none;color:#000;font-size:1.8em;cursor:pointer;}
+.contact-info img {width:140px;height:140px;border-radius:50%;object-fit:cover;box-shadow:0 4px 20px rgba(0,255,255,0.3);}
+.contact-info a {margin:8px;background:#333;padding:12px 20px;border-radius:12px;}
 
-        /* Container */
-        .container {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
+/* Category & Grid */
+.category-filter {display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:30px 20px;}
+.category-btn {padding:10px 24px;border:2px solid #00ffff;background:transparent;color:#00ffff;border-radius:50px;cursor:pointer;transition:0.3s;}
+.category-btn.active, .category-btn:hover {background:#00ffff;color:#000;font-weight:600;}
 
-        /* Products */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-        }
-        .product-image {
-            height: 200px;
-            background: #f1f2f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-        .product-card:hover .product-image img {
-            transform: scale(1.05);
-        }
-        .product-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--accent);
-            color: white;
-            padding: 0.3rem 0.7rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        .product-info {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .product-title {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-        .product-description {
-            color: #636e72;
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
-        }
-        .product-price {
-            font-size: 1.5rem;
-            color: var(--primary);
-            font-weight: bold;
-            margin-bottom: 1.2rem;
-        }
-        .product-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto;
-            color: #636e72;
-            font-size: 0.9rem;
-        }
-        .product-rating {
-            color: var(--warning);
-        }
+.products-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:25px;padding:20px;max-width:1400px;margin:0 auto;
+}
 
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 3rem;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .pagination-btn {
-            padding: 0.7rem 1.2rem;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .pagination-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .pagination-btn:hover:not(.active) {
-            background: #f1f1f1;
-        }
+/* Card vẫn giữ style cũ nhưng đẹp hơn */
+.card{background:rgba(255,255,255,0.05);border-radius:16px;padding:20px;border:1px solid rgba(0,255,255,0.2);
+  backdrop-filter:blur(10px);transition:0.4s;}
+.card:hover{transform:translateY(-12px);box-shadow:0 20px 40px rgba(0,255,255,0.2);}
 
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-        .close-modal {
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: #636e72;
-        }
-        .modal-product-image {
-            height: 300px;
-            background: #f1f2f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        .modal-product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .modal-product-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-        .modal-product-info {
-            margin-bottom: 1.5rem;
-        }
-        .modal-product-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-        .modal-product-price {
-            font-size: 2rem;
-            color: var(--primary);
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
-        .modal-product-description {
-            color: #636e72;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-        .modal-product-features {
-            margin-bottom: 1.5rem;
-        }
-        .modal-product-features ul {
-            list-style-type: none;
-            padding-left: 1rem;
-        }
-        .modal-product-features li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        .modal-product-features li:before {
-            content: "✓";
-            color: var(--success);
-            position: absolute;
-            left: 0;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        .btn {
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            flex: 1;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .btn-demo {
-            background: var(--secondary);
-            color: white;
-        }
-        .btn-demo:hover {
-            background: var(--primary);
-        }
-        .btn-download {
-            background: var(--success);
-            color: white;
-        }
-        .btn-download:hover {
-            opacity: 0.9;
-        }
+/* Animations */
+@keyframes zoomIn{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            background: none;
-            color: rgb(0, 0, 0);
-            margin-left: 100px;
-            width: calc(100% - 260px);
-        }
+/* Badge cho phân loại sản phẩm */
+.category-badge {
+  display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.8em;font-weight:600;margin:5px 5px 0 0;
+}
+.category-premium {background:linear-gradient(45deg,#ffd700,#ff9500);color:#000;}
+.category-free {background:linear-gradient(45deg,#00ff88,#00cc66);color:#000;}
+.category-love {background:linear-gradient(45deg,#ff2d55,#ff0080);color:#fff;}
+.category-3js {background:linear-gradient(45deg,#00ffff,#0080ff);color:#000;}
+.category-wed {background:linear-gradient(45deg,#bf5fff,#8a2be2);color:#fff;}
+.pagination-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,255,255,0.1);
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(0,255,255,0.3);
+  backdrop-filter: blur(10px);
+}
 
-        /* Category filter */
-        .category-filter {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .category-btn {
-            padding: 0.7rem 1.5rem;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        .category-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .category-btn:hover:not(.active) {
-            background: #f1f1f1;
-        }
+.page-btn {
+  background: transparent;
+  color: #00ffff;
+  border: 2px solid #00ffff;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
 
-        /* Sidebar styles */
-        .sidebar-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            background: linear-gradient(90deg, #7c3aed, #6366f1);
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.page-btn:hover:not(:disabled) {
+  background: #00ffff;
+  color: #000;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,255,255,0.4);
+}
 
-        .sidebar-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-            border: 3px solid white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none !important;
+}
 
-        .home-btn {
-            background: white;
-            color: #7c3aed;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-top: 5px;
-            display: inline-block;
-            text-decoration: none;
-        }
+.page-number {
+  min-width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin: 0 4px;
+}
 
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #666;
-            margin: 15px 0 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+.page-number:hover {
+  background: #00ffff;
+  color: #000;
+  transform: scale(1.1);
+}
 
-        .menu-item {
-            padding: 12px 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #555;
-            border-radius: 8px;
-            transition: background 0.2s, color 0.2s;
-            margin-bottom: 5px;
-        }
-        .menu-item:hover {
-            background: #f3f4f6;
-            color: #7c3aed;
-        }
-
-        .submenu {
-            display: none;
-            flex-direction: column;
-            padding-left: 10px;
-            margin: 5px 0 10px 0;
-        }
-        .submenu a {
-            padding: 8px 12px;
-            text-decoration: none;
-            color: #777;
-            font-size: 14px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-        .submenu a:hover {
-            color: #7c3aed;
-            background: #f8f9fa;
-        }
-
-        .arrow {
-            font-size: 12px;
-            transition: transform 0.3s;
-        }
-        .menu-item.active .arrow {
-            transform: rotate(180deg);
-        }
-
-        /* Sidebar toggle button */
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            background: #6c63ff;
-            color: #fff;
-            border: none;
-            padding: 10px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 2100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-wrapper, footer {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .sidebar-toggle {
-                display: block;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
-            }
-            .modal-product-details {
-                grid-template-columns: 1fr;
-            }
-            .modal-actions {
-                flex-direction: column;
-            }
-            .admin-report-btn {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin-bottom: 1rem;
-                width: 100%;
-                justify-content: center;
-            }
-            header {
-                padding: 1rem;
-            }
-            
-            .tagline {
-                font-size: 1rem;
-            }
-            
-            .logo {
-                font-size: 2rem;
-            }
-            
-            .category-filter {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .category-btn {
-                width: 200px;
-            }
-            
-            .sidebar-logo {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .sidebar-header {
-                padding: 10px;
-            }
-        }
-    </style>
+.page-number.active {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  color: #000;
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(0,255,255,0.6);
+}
+/* ẨN HOÀN TOÀN SẢN PHẨM KHI CHƯA ĐĂNG NHẬP */
+#productsSection.guest-mode,
+.category-filter.guest-mode,
+#pagination.guest-mode {
+  display: none !important;
+}
+</style>
 </head>
 <body>
-    <!-- Sidebar Toggle Button -->
-    <button class="sidebar-toggle" id="sidebarToggle">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <!-- Thay thế URL này bằng URL logo của bạn -->
-            <img src="admin.jpg" alt="sang_dev Logo" class="sidebar-logo">
-            <a href="#" class="home-btn">Trang Chủ</a>
-        </div>
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
 
-       <div class="sidebar-section">
-    <p class="section-title">MENU</p>
-    <div class="menu-item has-submenu">
-        <span><i class="fas fa-folder"></i> Thể Loại</span>
-        <span class="arrow">▾</span>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">SANG DEV</div>
+    <p>Shop Mã Nguồn Private</p>
+  </div>
+
+  <div class="sidebar-menu">
+    <div class="menu-item" onclick="showSection('productsSection')">
+      <span><i class="fas fa-home"></i> Sản Phẩm</span>
     </div>
-    <div class="submenu" id="categoryFilter">
-        <button class="category-btn active" data-category="all">
-            <i class="fas fa-tools"></i> Tất cả
-        </button>
-        <button class="category-btn" data-category="free">
-            <i class="fas fa-gift"></i> Miễn phí
-        </button>
-        <button class="category-btn" data-category="premium">
-            <i class="fas fa-star"></i> Trả phí
-        </button>
-        <button class="category-btn" data-category="love">
-            <i class="fas fa-heart"></i> Tình yêu
-        </button>
-        <button class="category-btn" data-category="threejs">
-            <i class="fas fa-cube"></i> ThreeJS
-        </button>
-        <button class="category-btn" data-category="website">
-            <i class="fas fa-globe"></i> Website
-        </button>
+    <div class="menu-item" onclick="showSection('historySection')">
+      <span><i class="fas fa-history"></i> Lịch Sử Mua</span>
     </div>
+    <div class="menu-item" onclick="showSection('napSection')">
+      <span><i class="fas fa-wallet"></i> Nạp Tiền</span>
+    </div>
+
+    <p class="section-title">KHÁC</p>
+    <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
+      <span><i class="fas fa-phone-alt"></i> Liên Hệ</span>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="submenu">
+      <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="https://chat.zalo.me/" target="_blank"><i class="fas fa-comment-dots"></i> Zalo</a>
+      <a href="https://www.tiktok.com/@sangnguyendev" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+    </div>
+
+    <div class="menu-item hidden" id="adminSidebarBtn" onclick="showSection('adminPanel')">
+      <span><i class="fas fa-user-shield"></i> Admin Panel</span>
+    </div>
+    <div class="menu-item hidden" id="logoutSidebar" onclick="auth.signOut()">
+      <span><i class="fas fa-sign-out-alt"></i> Đăng Xuất</span>
+    </div>
+  </div>
 </div>
 
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+  <!-- Báo cáo Admin Button -->
+  <button class="admin-report-btn" id="adminReportBtn">
+    <i class="fas fa-exclamation-circle"></i> Báo cáo Admin
+  </button>
 
-        <div class="sidebar-section">
-            <p class="section-title">KHÁC</p>
-            <div class="menu-item has-submenu">
-                <span><i class="fas fa-phone-alt"></i> Liên Hệ</span>
-                <span class="arrow">▾</span>
-            </div>
-            <div class="submenu">
-                <a href="https://www.facebook.com/profile.php?id=61574167490098"><i class="fab fa-facebook"></i> Facebook</a>
-                <a href="https://chat.zalo.me/"><i class="fas fa-comment-dots"></i> Zalo</a>
-                <a href="https://www.tiktok.com/@sangnguyendev"><i class="fas fa-envelope"></i> Tiktok</a>
-            </div>
-        </div>
-        
-        <div style="padding: 15px; text-align: center; margin-top: 20px; color: #888; font-size: 12px;">
-            
-        </div>
+  <!-- Header -->
+  <header>
+    <div class="tagline">
+      <p>Chào mừng bạn đến với dịch vụ của tôi – Một lập trình viên yêu thích xây dựng website sáng tạo</p>
+      <p>Mình chuyên phát triển website, ứng dụng với giao diện đẹp mắt và tối ưu hiệu suất</p>
+      <p>Chọn sản phẩm rồi bấm tải về, sau đó liên hệ admin và nhớ nói tên hoặc số hiệu sản phẩm</p>
+      <p>Bạn có thể xem thêm về mình <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank">tại đây</a></p>
+      <p>Tạo website tự động <a href="https://bot-five-pi.vercel.app/" target="_blank">tại đây</a></p>
     </div>
-    
-    <!-- Main Content Wrapper -->
-    <div class="main-wrapper">
-        <header>
-            <button class="admin-report-btn" id="adminReportBtn">
-                <i class="fas fa-exclamation-circle"></i> Báo cáo Admin
-            </button>
-            <div class="logo">ㅤㅤㅤㅤㅤ</div>
-            <div class="tagline">
-                <p>Chào mừng bạn đến với dịch vụ của tôi – Một lập trình viên yêu thích xây dựng website sáng tạo</p>
-                <p>Mình chuyên phát triển website, ứng dụng với giao diện đẹp mắt và tối ưu hiệu suất</p>
-                <p>Chọn sản phẩm rồi bấm tải về, sau đó liên hệ admin và nhớ nói tên hoặc số hiệu sản phẩm</p>
-                <p>Bạn có thể xem thêm về mình <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank">tại đây</a></p>
-                <p>tạo website  <a href="https://bot-five-pi.vercel.app/" target="_blank">tại đây</a></p>
-                
-            </div>
-        </header>
-        
-        <div class="container">
-            <div class="category-filter" id="categoryFilter">
-                <button class="category-btn active" data-category="all">Tất cả</button>
-                <button class="category-btn" data-category="free">Miễn phí</button>
-                <button class="category-btn" data-category="premium">Trả phí</button>
-                <button class="category-btn" data-category="love">Tình yêu</button>
-                <button class="category-btn" data-category="3js">ThreeJS</button>
-                <button class="category-btn" data-category="wed">Website</button>
-            </div>
-            
-            <div class="products-grid" id="productsGrid">
-                <!-- Sản phẩm sẽ được thêm bằng JavaScript -->
-            </div>
-            
-            <!-- Phân trang -->
-            <div class="pagination" id="pagination">
-                <!-- Nút phân trang sẽ được thêm bằng JavaScript -->
-            </div>
-        </div>
-        
-        <footer>
-            <p><a href="sangdevshop.vercel.app" style="color: var(--warning);">© 2023 sang_dev - Shop mã nguồn</a></p>
-        </footer>
-    </div>
-    
-    <!-- Modal chi tiết sản phẩm -->
-    <div class="modal" id="productModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Chi tiết sản phẩm</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body" id="modalProductContent">
-                <!-- Nội dung sản phẩm sẽ được thêm bằng JavaScript -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal báo cáo admin -->
-    <div class="modal" id="adminReportModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Liên hệ Admin</h2>
-                <button class="close-modal">&times;</button>
-            </div>
+  </header>
 
-            <div class="contact-info" style="text-align: center; padding: 20px;">
-    <!-- Avatar Admin -->
-    <img id="adminAvatar" src="admin.jpg" alt="Ảnh Admin" 
-         style="width:140px; height:140px; border-radius:50%; object-fit: cover; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:15px; cursor:pointer;">
+  <!-- Category Filter -->
+  <div class="category-filter">
+    <button class="category-btn active" data-category="all">Tất cả</button>
+    <button class="category-btn" data-category="premium">Trả phí</button>
+    <button class="category-btn" data-category="free">Miễn phí</button>
+    <button class="category-btn" data-category="love">Tình yêu</button>
+    <button class="category-btn" data-category="3js">ThreeJS</button>
+    <button class="category-btn" data-category="wed">Website</button>
+  </div>
 
-    <!-- Thông tin -->
-    <h3 style="margin: 10px 0; color: var(--primary);">sang_dev</h3>
-    <p>Nếu có lỗi hãy báo admin để khắc phục nhanh nhất</p>
-    <p>Luôn hỗ trợ tận tình, nhiệt tình</p>
+  <!-- Content -->
+  <div class="container">
+    <!-- Auth -->
+    <div id="authSection" class="section card" style="max-width:420px;margin:40px auto;">
+      <h2 id="authTitle">Đăng nhập</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="pass" placeholder="Mật khẩu" required>
+      <input type="text" id="username" placeholder="Tên hiển thị (đăng ký)" class="hidden">
+      <button class="btn btn-primary" id="authAction">Đăng nhập</button>
+      <p style="text-align:center;margin-top:10px;">
+        <a href="#" id="switchAuth">Chưa có tài khoản? Đăng ký ngay</a>
+      </p>
+    </div>
+
+    <div id="loading" class="section">Đang tải sản phẩm...</div>
+    
+    <div id="productsSection" class="section active">
+      <div class="products-grid" id="products"></div>
+
+<!-- PHÂN TRANG -->
+<!-- PHÂN TRANG MỚI - 9 SẢN PHẨM / TRANG -->
+<div id="pagination" class="pagination-wrapper" style="margin:50px auto; text-align:center; display:none;">
+  <button class="page-btn" id="prevBtn">Trước</button>
+  
+  <div id="pageNumbers" style="display:inline-flex; gap:8px; align-items:center; margin:0 15px;"></div>
+  
+  <span style="color:#aaa; margin:0 10px;">Đi đến trang:</span>
+  <input type="number" id="gotoPage" min="1" style="width:70px; padding:10px; border-radius:12px; border:2px solid #00ffff; background:rgba(255,255,255,0.1); color:#fff; text-align:center; outline:none;" placeholder="1">
+  
+  <button class="page-btn" id="nextBtn">Sau</button>
+</div>
+    </div>
+
+    <!-- Lịch sử -->
+    <div id="historySection" class="section hidden">
+      <h2>Lịch sử mua hàng</h2>
+      <div id="historyList"></div>
+    </div>
+
+    <!-- Nạp tiền -->
+    <div id="napSection" class="section hidden">
+      <h2>Nạp tiền vào tài khoản</h2>
+      <div class="card" style="background:rgba(0,255,255,0.1);text-align:center;">
+        <p><strong>Ngân hàng:</strong> BIDV)</p>
+        <p><strong>Chủ tài khoản:</strong> DUONG THI THUY HANG</p>
+        <p><strong>Số tài khoản:</strong> 8870110660</p>
+        
+        <!-- MÃ QR ĐẸP -->
+        <style>
+  /* Khung modal nền tối */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Ảnh lớn */
+  .modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.6);
+  }
+</style>
+
+<div style="margin:20px 0;">
+  <img id="qrImage" 
+       src="https://sf-static.upanhlaylink.com/img/image_202511206272efd82bad8a9b72f128e1e585fa57.jpg"
+       alt="Mã QR nạp tiền"
+       style="width:260px;height:260px;border-radius:12px;border:3px solid #00ffff;box-shadow:0 0 20px rgba(0,255,255,0.4);cursor:pointer;">
+  <p style="margin-top:10px;color:#0f0;font-size:0.9em;">Quét mã QR để nạp nhanh (tự động điền nội dung)</p>
+</div>
+
+<!-- Modal -->
+<div id="imgModal" class="modal">
+  <img id="modalImage">
 </div>
 
 <script>
-    const avatar = document.getElementById('adminAvatar');
-    let clickCount = 0;
+  const qrImage = document.getElementById("qrImage");
+  const modal = document.getElementById("imgModal");
+  const modalImage = document.getElementById("modalImage");
 
-    avatar.addEventListener('click', () => {
-        clickCount++;
-        if (clickCount === 10) {
-            // Chuyển tới trang khác
-            window.location.href = "pass.html"; // thay bằng URL bạn muốn
-        }
-    });
+  qrImage.onclick = function () {
+    modalImage.src = this.src;
+    modal.style.display = "flex";
+  };
+
+  modal.onclick = function () {
+    modal.style.display = "none";
+  };
 </script>
 
-                
 
-                <!-- Liên hệ mạng xã hội -->
-                <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                    <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank" 
-                       style="background:#1877f2; color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; display: flex; align-items: center; gap: 5px;">
-                       <i class="fab fa-facebook"></i> Facebook
-                    </a>
-                    <a href="#" target="_blank" 
-                       style="background:#06c755; color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; display: flex; align-items: center; gap: 5px;">
-                       <i class="fas fa-comment-dots"></i> Zalo
-                    </a>
-                    <a href="mailto:nguyenhongsang0207@gmail.com" 
-                       style="background:#ff5a5f; color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; display: flex; align-items: center; gap: 5px;">
-                       <i class="fas fa-envelope"></i> Gmail
-                    </a>
-                </div>
-            </div>
-        </div>
+        <p><strong>Nội dung chuyển khoản:</strong> <code id="noidungNap" style="font-size:1.3em;color:#ff00ff;">Chưa đăng nhập</code></p>
+        <p style="color:#ffeb3b;margin-top:10px;">Bắt buộc ghi đúng nội dung để được duyệt tự động!</p>
+      </div>
+
+      <input type="number" id="amountNap" placeholder="Số tiền nạp (tối thiểu 10,000đ)" min="10000" style="margin-top:15px;">
+      <button class="btn btn-success" onclick="daNap()" style="width:100%;padding:15px;font-size:1.2em;margin-top:10px;">Tôi đã chuyển khoản</button>
     </div>
 
-    <script>
-    // 👉 Lưu trữ dữ liệu sản phẩm (đã thêm thuộc tính 'pinned' cho ghim sản phẩm chính)
-     const products = [
-            {
-                id: 1,
-                title: "01ngân hà tình yêu",
-                description: "Mẫu này thích hợp cho các bạn đã có ngiu hoặc gia đình",
-                detailedDescription: "",
-                price: "100.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7523192990362340626?is_from_webapp=1&sender_device=pc&web_id=7529880604436563463",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250821b4c2c102caa9cc4f4d9f5d03e21c5a8d.jpg",
-                category: ["premium", "love","all","Website"],
-                features: [
-                    "tối đa 10 ảnh",
-                    "họ trợ từ a=>z",
-                    "demo ở tiktok @sangnguyendev",
-                    ""
-                ],
-                rating: 4.8,
-                downloads: 12,
-                pinned: false  // Ghim sản phẩm này (bạn có thể chỉnh sửa true/false cho từng sản phẩm)
-            },
-            {
-                id: 2,
-                title: "02 mô hình vũ trụ 3js",
-                description: "chi tiết cách vận hành vũ trụ chòm sao và các vệ tinh,vv",
-                detailedDescription: "",
-                price: "200.000",
-                demoUrl: "https://he-thong-vu-tru.vercel.app/",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250827902bb7496e24687d70e7aae7ff064734.jpg",
-                category: ["premium","Three js","all"],
-                features: [
-                    "cách vệ tinh vận hành",
-                    "cách hành tinh của hệ mặt trời",
-                    "3d",
-                    "vv"
-                ],
-                rating: 4.5,
-                downloads: 1,
-                pinned: false  // Ghim sản phẩm này
-            },
-             {
-                id: 3,
-                title: "03 tỏ tình ngiu",
-                description: "Mẫu này thích hợp cho các bạn đã có ngiu hoặc gia đình",
-                detailedDescription: "",
-                price: "120.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7539401947292519688?lang=en",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250821fd3d3bd86190335e3c9dfe7e0c9ec970.jpg",
-                category: ["premium", "love","all","Website"],
-                features: [
-                    "tỏ tình ngiu nhìu chức năng ",
-                    "xem link demo rồi báo admin nha",
-                    "hoặc có thể xem demo ở tiktok @sangnguyendev",
-                    ""
-                ],
-                rating: 4.2,
-                downloads: 7,
-                pinned: false
-            },
-            {
-                id: 4,
-                title: "04đếm này yêu",
-                description: "đếm này yêu đa chức năng có thể lưu trử kỷ niệm",
-                detailedDescription: "",
-                price: "200.000",
-                demoUrl: "#",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://nguyennamtien.shop/upload/product/productH0YE9A.png",
-                category: ["premium", "love","wedsite","all"],
-                features: [
-                    "đếm này yêu",
-                    "lưu dữ kỷ niệm",
-                    "lãng mạng",
-                    ""
-                ],
-                rating: 4.8,
-                downloads: 1250,
-                pinned: false
-            },
-            {
-                id: 5,
-                title: "karaoke lyric",
-                description: "cùng hát thoi nào",
-                detailedDescription: "",
-                price: "70.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7537904599278144776?lang=en",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250821e1667e52f25e5f5e0d62e3797c3bbb58.jpg",
-                category: ["premium",],
-                features: [
-                    "",
-                    "",
-                ],
-                rating: 4.8,
-                downloads: 2,
-                pinned: false
-            },
-             {
-                id: 6,
-                title: "06 sinh nhật",
-                description: "code sinh nhật siêu xịn",
-                detailedDescription: "Mẫu portfolio đẹp mắt với thiết kế hiện đại, phù hợp cho các nhà phát triển, nhà thiết kế và những người sáng tạo muốn trưng bày công việc của họ.",
-                price: "100.000",
-                demoUrl: "#",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250821776e271ff10beeb529d4906aa6d82938.jpg",
-                category: ["premium", "love","website"],
-                features: [
-                    "demo ở tiktok mình nha",
-                    "@sangnguyendev",
-            
-                ],
-                rating: 4.5,
-                downloads: 5,
-                pinned: false
-            },
-             {
-                id: 7,
-                title: "07 sinh nhật 2",
-                description: "đón sinh nhật cùng ngiu nào",
-                detailedDescription: "",
-                price: "Miễn phí(đang bảo trì)",
-                demoUrl: "#",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_202508216c9e169ce16a6de478f819d48e2edd5e.jpg",
-                category: ["free", "love","all","website"],
-                features: [
-                    "sinh nhật vui vẽ",
-                   
-                 
-                    
-                ],
-                rating: 4.0,
-                downloads: 3,
-                pinned: false
-            },
-         {
-                id: 8,
-                title: "hoa",
-                description: "ngào ngào",
-                detailedDescription: "",
-                price: "50.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7492021809383263495?is_from_webapp=1&sender_device=pc&web_id=7529880604436563463",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250823b51595616f60972c636a3d8304c29e51.jpg",
-                category: ["premium", "love","all"],
-                features: [
-                    "lãng mạng",
-                   
-                 
-                    
-                ],
-                rating: 4.0,
-                downloads: 2,
-                pinned: false
-            },
-         {
-                id: 9,
-                title: "bản đổ biển đảo",
-                description: "tự hào bản biển đâỏ Việt Nam",
-                detailedDescription: "",
-                price: "70.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7491640644104916232?is_from_webapp=1&sender_device=pc&web_id=7529880604436563463",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_202508236417b900aa9c3399400fe05797dca0c5.jpg",
-                category: ["premium", "all"],
-                features: [
-                    "lãng mạng",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 2,
-                pinned: false
-            },
-          {
-                id: 10,
-                title: "trái tim",
-                description: "",
-                detailedDescription: "",
-                price: "100.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7487842920985316609?is_from_webapp=1&sender_device=pc&web_id=7529880604436563463",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20250827ba536f4710fabb7ae09d18a43bf3af5f.jpg",
-                category: ["premium", "all","website"],
-                features: [
-                    "lãng mạng",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 0,
-                pinned: false  // Ghim sản phẩm này
-            },
-         {
-                id: 11,
-                title: "shop",
-                description: "shop bán nick game",
-                detailedDescription: "",
-                price: "100.000",
-                demoUrl: "#",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_202508285a4e51a728cf2d26feafdd43e5889405.jpg",
-                category: ["premium", "all","website"],
-                features: [
-                    "tính năng đầy đủ ",
-                    "có thể nạp qua thẻ cào ",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 1,
-                pinned: true
-            },
-         {
-                id: 12,
-                title: "thiết kế điện thoại",
-                description: "thiết ké iphone tương lai",
-                detailedDescription: "",
-                price: "50.000",
-                demoUrl: "#",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_202509039c08f41f4a641499ada2a2550b7a16c4.jpg",
-                category: ["premium", "all","website","Three js"],
-                features: [
-                    "NHIỀU TÍNH NĂNG ",
-                    "BẠN CÓ THỂ THIẾT KẾ ĐIỆN THOẠI ",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 1,
-                pinned: false
-            },
-          {
-                id: 13,
-                title: "lưu dữ kỉ niệm tình yêu",
-                description: "lưu dữ nhưng kỉ niệm chúng ta",
-                detailedDescription: "",
-                price: "100.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7547720764372389140?is_from_webapp=1&sender_device=pc&web_id=7529880604436563463",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_202509137c2eac942e3aa7f419ee54163dfe1daf.jpg",
-                category: ["premium", "all","website","love"],
-                features: [
-                    "giá gốc 500k bán lại 100k",
-                    "xem trên tiktok mik nha ",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 1,
-                pinned: true
-            },
-         {
-                id: 14,
-                title: "thử ngiệm power",
-                description: "slide ",
-                detailedDescription: "",
-                price: "100.000.000.000",
-                demoUrl: "#",
-                fileUrl: "#",
-                imageUrl: "https://wallpapers.com/images/hd/coding-background-9izlympnd0ovmpli.jpg",
-                category: ["premium",],
-                features: [
-                    "",
-                    "",
-                ],
-                rating: 4.8,
-                downloads: 2,
-                pinned: false
-            },
-         {
-                id: 15,
-                title: "trái tim ",
-                description: "trái tim three js",
-                detailedDescription: "",
-                price: "70.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7558473007237319954",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20251016649b47b963e34d529f99c2dcfe72e775.jpg",
-                category: ["premium", "all","website","love","3js"],
-                features: [
-                    "tình yêu",
-                    "xem trên tiktok mik nha ",
-                   
-                 
-                    
-                ],
-                rating: 5,
-                downloads: 9,
-                pinned: true
-            },
-         {
-                id: 16,
-                title: "karaoke lyric",
-                description: "",
-                detailedDescription: "",
-                price: "70.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7561683548483259669",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_2025101604eca2b72be77940304527865dd02cd1.jpg",
-                category: ["premium", "all","love"],
-                features: [
-                    "bài em đã xa anh mất rồi người ơi",
-                    "xem trên tiktok mik nha ",
-                   
-                 
-                    
-                ],
-                rating: 4,
-                downloads: 2,
-                pinned: false
-            },
-         {
-                id: 17,
-                title: "20/10",
-                description: "ngày liên hiệp phụ nữ Việt Nam",
-                detailedDescription: "",
-                price: "69.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7562769438504668417",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20251019650baaf69ae3d41230a9ba61cc58e330.jpg",
-                category: ["premium", "all","love"],
-                features: [
-                    "20/10 vui vẻ nha",
-                    "xem trên tiktok mik nha ",
-                   
-                 
-                    
-                ],
-                rating: 4,
-                downloads: 2,
-                pinned: false
-            },
-          {
-                id: 18,
-                title: "sinh nhật",
-                description: "tặng sinh nhật người yêu",
-                detailedDescription: "",
-                price: "120.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7565860799520967943",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_2025103127386422b97f16b7413e12895bb401d1.jpg",
-                category: ["premium", "all","love"],
-                features: [
-                    "sinh nhật vui vẻ nhá",
-                    "",
-                   
-                 
-                    
-                ],
-                rating: 5,
-                downloads: 2,
-                pinned: false
-            },
-         {
-                id: 19,
-                title: "lyric",
-                description: "nhạc",
-                detailedDescription: "",
-                price: "50.000",
-                demoUrl: "https://www.tiktok.com/@sangnguyendev/video/7567386384781069575?is_from_webapp=1&sender_device=pc&web_id=7565013615184299536",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20251031d0b782705f13fa957746baed87d8d079.jpg",
-                category: ["premium", "all","love"],
-                features: [
-                    "suyy",
-                    "chill ",
-                   
-                 
-                    
-                ],
-                rating: 4,
-                downloads: 2,
-                pinned: false
-            },
-          {
-                id: 20,
-                title: "19/11",
-                description: "quốc tế nam giới vui vẻ nhá",
-                detailedDescription: "",
-                price: "100.000",
-                demoUrl: "http://127.0.0.1:5500/index.html",
-                fileUrl: "https://www.facebook.com/profile.php?id=61574167490098",
-                imageUrl: "https://sf-static.upanhlaylink.com/img/image_20251107bd78c928b225eaafb62e208100f306d8.jpg",
-                category: ["premium", "all","website","love"],
-                features: [
-                    "lãng mạng",
-                    "tặng người yêu",
-                   
-                 
-                    
-                ],
-                rating: 4.1,
-                downloads: 0,
-                pinned: true  // Ghim sản phẩm này
-            },
-         
-           ]
-
-    // 👉 Biến toàn cục
-    let currentProduct = null;
-    let currentPage = 1;
-    let currentCategory = 'all';
-    const productsPerPage = 6;
-
-    document.addEventListener("DOMContentLoaded", () => {
-        // --- Hiển thị sản phẩm & phân trang ---
-        displayProductsForPage(currentPage);
-        setupPagination();
-
-        // --- Đóng modal ---
-        document.querySelectorAll('.close-modal').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
-            });
-        });
-
-        // --- Báo cáo admin ---
-        const adminBtn = document.getElementById('adminReportBtn');
-        if (adminBtn) {
-            adminBtn.addEventListener('click', () => {
-                document.getElementById('adminReportModal').style.display = 'flex';
-            });
-        }
-
-        // --- Lọc theo danh mục ---
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentCategory = this.getAttribute('data-category');
-                currentPage = 1;
-                displayProductsForPage(currentPage);
-                setupPagination();
-            });
-        });
-
-        // --- Đóng modal khi click ngoài ---
-        window.addEventListener('click', e => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-            }
-        });
-
-        // --- Sidebar toggle (chỉ trên mobile) ---
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.querySelector('.sidebar');
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="section hidden">
+      <h2>Admin Panel</h2>
+      <div class="card">
+        <h3>Thêm / Sửa sản phẩm</h3>
+        <input type="text" id="pName" placeholder="Tên sản phẩm">
+        <textarea id="pDesc" placeholder="Mô tả chi tiết (hỗ trợ HTML)" rows="4"></textarea>
+        <input type="number" id="pPrice" placeholder="Giá (VNĐ)" min="1000">
+        <input type="number" id="pStock" placeholder="Số lượng key" min="1">
+        <input type="text" id="pDownloadURL" placeholder="Link tải source (sau khi mua)">
         
-        if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
-        }
-
-        // --- Submenu toggle ---
-        document.querySelectorAll(".has-submenu").forEach(item => {
-            item.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const submenu = item.nextElementSibling;
-                if (submenu && submenu.classList.contains('submenu')) {
-                    submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-                    item.classList.toggle('active');
-                }
-            });
-        });
+        <!-- Thêm chọn phân loại -->
+        <select id="pCategory" style="margin:15px 0;">
+          <option value="premium">Trả phí</option>
+          <option value="free">Miễn phí</option>
+          <option value="love">Tình yêu</option>
+          <option value="3js">ThreeJS</option>
+          <option value="wed">Website</option>
+        </select>
         
-        // Mở submenu mặc định cho "Thể Loại"
-        const categorySubmenu = document.querySelector('.has-submenu').nextElementSibling;
-        if (categorySubmenu && categorySubmenu.classList.contains('submenu')) {
-            categorySubmenu.style.display = 'flex';
-            document.querySelector('.has-submenu').classList.add('active');
-        }
+        <div style="margin:15px 0;">
+          <label><strong>Link ảnh demo (mỗi dòng 1 link)</strong></label>
+          <textarea id="pImageLinks" rows="4" placeholder="https://example.com/image1.jpg\nhttps://example.com/image2.png"></textarea>
+        </div>
+        <div id="linkPreview" style="margin:10px 0;"></div>
+        <div style="margin-top:15px;">
+          <button class="btn btn-primary" id="addProductBtn">Thêm sản phẩm mới</button>
+          <button class="btn btn-danger" onclick="deleteSelected()">Xóa sản phẩm đã chọn</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top:30px;">Yêu cầu nạp tiền</h3>
+      <div id="pendingPayments"><p>Đang tải...</p></div>
+
+      <h3 style="margin-top:30px;">Quản lý người dùng</h3>
+      <div class="card">
+        <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;">
+          <input type="text" id="searchUser" placeholder="Tìm email / UID / tên hiển thị..." style="flex:1;min-width:200px;">
+          <button class="btn btn-primary" onclick="loadUsers()">Tải lại</button>
+        </div>
+
+        <div id="usersList" style="max-height:600px;overflow-y:auto;">
+          <p style="text-align:center;color:#aaa;">Nhấn "Tải lại" để xem danh sách người dùng</p>
+        </div>
+      </div>
+    </div>
+
+    <footer style="text-align:center;padding:40px;color:#888;">
+      <p><a href="https://sangdevshop.vercel.app" style="color:#00ffff;">© 2025 SANG DEV - Shop mã nguồn uy tín</a></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Modal Báo Cáo Admin -->
+<div class="modal" id="adminReportModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Liên hệ Admin</h2>
+      <button class="close-modal">×</button>
+    </div>
+    <div class="contact-info" style="text-align:center;padding:30px;">
+      <img id="adminAvatar" src="https://sangdevshop.vercel.app/admin.jpg" alt="Admin">
+      <h3 style="margin:15px 0;color:#00ffff;">sang_dev</h3>
+      <p>Nếu có lỗi hãy báo admin để khắc phục nhanh nhất</p>
+      <p>Luôn hỗ trợ tận tình 24/7</p>
+      <div style="margin-top:25px;display:flex;justify-content:center;gap:15px;flex-wrap:wrap;">
+        <a href="https://www.facebook.com/sang.nguyen.812049" target="_blank" style="background:#1877f2;color:#fff;padding:12px 20px;border-radius:12px;">
+          <i class="fab fa-facebook"></i> Facebook
+        </a>
+        <a href="https://zalo.me/0335764804" target="_blank" style="background:#06c755;color:#fff;padding:12px 20px;border-radius:12px;">
+          <i class="fas fa-comment-dots"></i> Zalo
+        </a>
+        <a href="mailto:nguyenhongsang0207@gmail.com" style="background:#ff5a5f;color:#fff;padding:12px 20px;border-radius:12px;">
+          <i class="fas fa-envelope"></i> Gmail
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+// === CONFIG FIREBASE ===
+const firebaseConfig = {
+  apiKey: "AIzaSyCTnc0HQWRxsHDEWlJ4ZT9yqKDbC8unm00",
+  authDomain: "adminshop-c2ac2.firebaseapp.com",
+  projectId: "adminshop-c2ac2",
+  storageBucket: "adminshop-c2ac2.firebasestorage.app",
+  messagingSenderId: "583532399934",
+  appId: "1:583532399934:web:23a213d578f3144053706f",
+  measurementId: "G-9D6JRTW7TM"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+let currentUser = null;
+let isAdmin = false;
+let editingProductId = null;
+let authInitialized = false;
+
+
+// ==================== KHỞI TẠO BAN ĐẦU ====================
+document.addEventListener('DOMContentLoaded', function() {
+  showSection('productsSection');
+  setupCategoryFilter();
+  loadProducts(); // ← Dòng quan trọng nhất đây này!
+});
+
+// ==================== AUTH STATE CHANGED ====================
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+
+  // Ẩn loading ngay lập tức
+  document.getElementById('loading')?.classList.add('hidden');
+
+  if (user) {
+    // ĐÃ ĐĂNG NHẬP
+    console.log('Đã đăng nhập:', user.email);
+
+    // Ẩn form login, hiện các nút user
+    document.getElementById('authSection').classList.add('hidden');
+    document.getElementById('logoutSidebar').classList.remove('hidden');
+
+    // Load dữ liệu user
+    await loadBalance();
+    await checkAdmin(user.uid);
+    document.getElementById('noidungNap').innerText = user.uid.slice(0, 12);
+
+    // Vào thẳng trang sản phẩm
+    showSection('productsSection');
+    await loadProducts(); // Reload lại để hiện nút "Mua ngay"
+
+  } else {
+    // CHƯA ĐĂNG NHẬP HOẶC ĐĂNG XUẤT
+    console.log('Chưa đăng nhập hoặc đã đăng xuất');
+
+    // Reset giao diện
+    document.getElementById('authSection').classList.remove('hidden');
+    document.getElementById('logoutSidebar').classList.add('hidden');
+    document.getElementById('adminSidebarBtn').classList.add('hidden');
+    document.getElementById('balance').innerText = 'Số dư: 0đ';
+    document.getElementById('noidungNap').innerText = 'Chưa đăng nhập';
+    isAdmin = false;
+
+    // Hiện form login
+    showSection('authSection');
+    await loadProducts(); // Vẫn cho xem sản phẩm khi chưa login
+  }
+  // Sau khi đăng nhập thành công → tự động chuyển sang trang sản phẩm (không còn thấy form login nữa)
+if (user && document.getElementById('authSection')) {
+  showSection('productsSection');  // Đẩy thẳng vào trang sản phẩm
+}
+});
+
+// ==================== ĐĂNG NHẬP / ĐĂNG KÝ ====================
+document.getElementById('switchAuth').onclick = (e) => {
+  e.preventDefault();
+  const isLogin = document.getElementById('authTitle').innerText === 'Đăng nhập';
+  document.getElementById('authTitle').innerText = isLogin ? 'Đăng ký' : 'Đăng nhập';
+  document.getElementById('authAction').innerText = isLogin ? 'Đăng ký' : 'Đăng nhập';
+  document.getElementById('username').classList.toggle('hidden');
+  document.getElementById('switchAuth').innerText = isLogin ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Đăng ký ngay';
+};
+
+document.getElementById('authAction').onclick = async () => {
+  const email = document.getElementById('email').value.trim();
+  const pass = document.getElementById('pass').value;
+  const username = document.getElementById('username').value.trim();
+  
+  if (!email || !pass) return alert('Nhập đầy đủ thông tin');
+  
+  try {
+    if (document.getElementById('authTitle').innerText === 'Đăng nhập') {
+      await auth.signInWithEmailAndPassword(email, pass);
+    } else {
+      if (!username) return alert('Nhập tên hiển thị');
+      const cred = await auth.createUserWithEmailAndPassword(email, pass);
+      await db.collection('users').doc(cred.user.uid).set({
+        username, email, balance: 0, role: 'user', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    // Reset form
+    document.getElementById('email').value = '';
+    document.getElementById('pass').value = '';
+    document.getElementById('username').value = '';
+  } catch (err) {
+    alert('Lỗi: ' + err.message);
+  }
+};
+
+// ==================== LOAD SỐ DƯ ====================
+async function loadBalance() {
+  if (!currentUser) return;
+  const snap = await db.collection('users').doc(currentUser.uid).get();
+  const data = snap.data() || {balance: 0};
+  document.getElementById('balance').innerText = `Số dư: ${data.balance.toLocaleString()}đ`;
+}
+
+// ==================== KIỂM TRA ADMIN ====================
+async function checkAdmin(uid) {
+  const snap = await db.collection('users').doc(uid).get();
+  if (snap.data()?.role === 'admin') {
+    isAdmin = true;
+    document.getElementById('adminSidebarBtn').classList.remove('hidden');
+  }
+}
+
+// ==================== LOAD SẢN PHẨM ====================
+async function loadProducts() {
+  const container = document.getElementById('products');
+  container.innerHTML = '';
+  const snap = await db.collection('products').orderBy('createdAt', 'desc').get();
+  
+  if (snap.empty) {
+    container.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:#aaa;">Chưa có sản phẩm nào</p>';
+    return;
+  }
+
+  snap.forEach(doc => {
+    const p = doc.data();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.dataset.category = p.category || 'premium';
+
+    const carousel = p.images?.length > 0 ? `
+      <div class="carousel-container">
+        <div class="carousel">
+          ${[...p.images, ...p.images].map((img, i) => `
+            <img src="${img}" onclick="openLightbox(${JSON.stringify(p.images)}, ${i % p.images.length})">
+          `).join('')}
+        </div>
+        <button onclick="openLightbox(${JSON.stringify(p.images)},0)" style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);color:#fff;padding:6px 12px;border:none;border-radius:8px;cursor:pointer;font-size:0.9em;">
+          Xem demo (${p.images.length})
+        </button>
+      </div>` : '<div style="background:#222;height:220px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#666;font-size:1.1em;">Không có ảnh demo</div>';
+
+    // Hiển thị phân loại sản phẩm
+    const categoryBadge = p.category ? `<span class="category-badge category-${p.category}">${getCategoryName(p.category)}</span>` : '';
+    
+    // Nút mua: chỉ hiện "Hết hàng" khi stock = 0, còn lại luôn là "Mua ngay"
+    const buyButton = p.stock > 0 
+      ? `<button class="btn btn-primary" onclick="buy('${doc.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${p.downloadURL || ''}')">Mua ngay</button>`
+      : `<button class="btn" disabled style="background:#555;cursor:not-allowed;opacity:0.7;">Hết hàng</button>`;
+
+    div.innerHTML = `
+      <h3>${p.name}</h3>
+      ${categoryBadge}
+      ${carousel}
+      <p style="margin:10px 0;line-height:1.6;">${p.desc.replace(/\n/g, '<br>')}</p>
+      <p><strong>Giá:</strong> <span style="color:#00ffff;font-size:1.3em;">${p.price.toLocaleString()}đ</span></p>
+      <p><strong>Còn lại:</strong> <span style="color:${p.stock > 0 ? '#0f0' : '#f55'}">${p.stock}</span></p>
+      ${buyButton}
+      ${isAdmin ? `<div style="margin-top:10px;">
+        <button class="btn btn-success" onclick="editProduct('${doc.id}')">Sửa</button>
+        <label style="margin-left:10px;"><input type="checkbox" class="delCheck" value="${doc.id}"> Xóa</label>
+      </div>` : ''}
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ==================== LỌC SẢN PHẨM THEO DANH MỤC ====================
+function setupCategoryFilter() {
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Xóa active khỏi tất cả các nút
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      // Thêm active vào nút được click
+      btn.classList.add('active');
+      
+      const category = btn.dataset.category;
+      filterProducts(category);
+    });
+  });
+}
+
+function filterProducts(category) {
+  const products = document.querySelectorAll('#products .card');
+  
+  products.forEach(product => {
+    if (category === 'all' || product.dataset.category === category) {
+      product.style.display = 'block';
+    } else {
+      product.style.display = 'none';
+    }
+  });
+}
+
+// ==================== CHUYỂN ĐỔI TÊN DANH MỤC ====================
+function getCategoryName(category) {
+  const categories = {
+    'premium': 'Trả phí',
+    'free': 'Miễn phí',
+    'love': 'Tình yêu',
+    '3js': 'ThreeJS',
+    'wed': 'Website'
+  };
+  return categories[category] || category;
+}
+
+// ==================== LIGHTBOX ====================
+function openLightbox(images, startIndex = 0) {
+  if (!images || images.length === 0) return;
+  let idx = startIndex;
+  const lightbox = document.createElement('div');
+  lightbox.style.cssText = `position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;`;
+  lightbox.innerHTML = `
+    <div style="position:relative;max-width:90%;max-height:90%;">
+      <img id="lbImg" src="${images[idx]}" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:12px;">
+      <button onclick="this.closest('[style]').remove()" style="position:absolute;top:10px;right:10px;background:#ff3b30;color:#fff;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;z-index:10;">Đóng</button>
+      ${images.length > 1 ? `
+      <button onclick="changeImg(-1)" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);color:#fff;padding:15px 10px;border:none;border-radius:8px;cursor:pointer;font-size:2em;">◄</button>
+      <button onclick="changeImg(1)" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);color:#fff;padding:15px 10px;border:none;border-radius:8px;cursor:pointer;font-size:2em;">►</button>
+      <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,0.6);padding:5px 15px;border-radius:8px;">
+        ${idx+1} / ${images.length}
+      </div>` : ''}
+    </div>`;
+  document.body.appendChild(lightbox);
+
+  window.changeImg = (dir) => {
+    idx = (idx + dir + images.length) % images.length;
+    document.getElementById('lbImg').src = images[idx];
+    lightbox.querySelector('div:last-child').innerText = `${idx+1} / ${images.length}`;
+  };
+}
+
+// ==================== SỬA & THÊM SẢN PHẨM ====================
+window.editProduct = async (id) => {
+  if (!isAdmin) return;
+  const snap = await db.collection('products').doc(id).get();
+  if (!snap.exists) return alert('Sản phẩm không tồn tại!');
+  const p = snap.data();
+  editingProductId = id;
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pDesc').value = p.desc;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pStock').value = p.stock;
+  document.getElementById('pDownloadURL').value = p.downloadURL || '';
+  document.getElementById('pCategory').value = p.category || 'premium';
+  document.getElementById('pImageLinks').value = p.images ? p.images.join('\n') : '';
+  document.getElementById('addProductBtn').innerText = 'Cập nhật sản phẩm';
+  document.getElementById('addProductBtn').onclick = updateProduct;
+  showSection('adminPanel');
+};
+
+window.updateProduct = async () => { await saveProduct(true); };
+window.addProduct = async () => { await saveProduct(false); };
+
+async function saveProduct(isUpdate) {
+  if (!isAdmin) return alert('Chỉ admin mới được thêm!');
+  const name = document.getElementById('pName').value.trim();
+  const desc = document.getElementById('pDesc').value.trim();
+  const price = parseInt(document.getElementById('pPrice').value);
+  const stock = parseInt(document.getElementById('pStock').value);
+  const category = document.getElementById('pCategory').value;
+  const downloadURL = document.getElementById('pDownloadURL').value.trim();
+  const imageURLs = document.getElementById('pImageLinks').value.trim().split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
+
+  if (!name || !desc || isNaN(price) || isNaN(stock) || price < 1000 || stock < 1 || !downloadURL || imageURLs.length === 0) {
+    return alert('Phải nhập đầy đủ + ít nhất 1 link ảnh demo hợp lệ!');
+  }
+
+  const btn = document.getElementById('addProductBtn');
+  btn.disabled = true;
+  btn.innerText = isUpdate ? 'Đang cập nhật...' : 'Đang thêm...';
+
+  try {
+    if (isUpdate) {
+      await db.collection('products').doc(editingProductId).update({
+        name, desc, price, stock, category, downloadURL, images: imageURLs
+      });
+      alert('Cập nhật thành công!');
+    } else {
+      await db.collection('products').add({
+        name, desc, price, stock, category, downloadURL, images: imageURLs,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert('Thêm sản phẩm thành công!');
+    }
+    // Reset form
+    document.getElementById('pName').value = document.getElementById('pDesc').value = document.getElementById('pPrice').value = document.getElementById('pStock').value = document.getElementById('pDownloadURL').value = '';
+    document.getElementById('pImageLinks').value = '';
+    btn.innerText = 'Thêm sản phẩm mới';
+    btn.onclick = addProduct;
+    editingProductId = null;
+    loadProducts();
+  } catch (err) {
+    alert('Lỗi: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('addProductBtn').onclick = addProduct;
+
+// Xóa nhiều
+window.deleteSelected = async () => {
+  if (!isAdmin || !confirm('Xóa thật hả đại ca?')) return;
+  const checks = document.querySelectorAll('.delCheck:checked');
+  if (checks.length === 0) return alert('Chọn ít nhất 1 sản phẩm');
+  for (let c of checks) await db.collection('products').doc(c.value).delete();
+  alert('Xóa thành công!');
+  loadProducts();
+};
+
+// ==================== MUA HÀNG ====================
+window.buy = async (productId, productName, price, downloadURL) => {
+  if (!currentUser) return alert('Đăng nhập đi bro!');
+  const userSnap = await db.collection('users').doc(currentUser.uid).get();
+  const userData = userSnap.data();
+  if (userData.balance < price) return alert(`Không đủ tiền! Cần ${price.toLocaleString()}đ`);
+
+  const productSnap = await db.collection('products').doc(productId).get();
+  const p = productSnap.data();
+  if (p.stock < 1) return alert('Hết hàng rồi!');
+
+  if (!confirm(`Mua "${productName}" với giá ${price.toLocaleString()}đ?`)) return;
+
+  const key = 'KEY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+  try {
+    await db.runTransaction(async t => {
+      t.update(db.collection('users').doc(currentUser.uid), { balance: firebase.firestore.FieldValue.increment(-price) });
+      t.update(db.collection('products').doc(productId), { stock: firebase.firestore.FieldValue.increment(-1) });
+      
+      const historyRef = db.collection('history').doc();
+      t.set(historyRef, {
+        uid: currentUser.uid,
+        productId,
+        productName,
+        price,
+        key,
+        downloadURL,
+        time: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    alert(`Mua thành công!\nMã key: ${key}\nLink tải sẽ có trong lịch sử mua hàng`);
+    loadBalance();
+    loadProducts();
+  } catch (e) { 
+    console.error('Lỗi mua hàng:', e);
+    alert('Lỗi: ' + e.message); 
+  }
+};
+
+// ==================== LỊCH SỬ ====================
+async function loadHistory() {
+  if (!currentUser) return;
+  
+  const list = document.getElementById('historyList');
+  list.innerHTML = '<p>Đang tải lịch sử...</p>';
+  
+  try {
+    const snap = await db.collection('history')
+      .where('uid', '==', currentUser.uid)
+      .orderBy('time', 'desc')
+      .get();
+
+    if (snap.empty) {
+      list.innerHTML = '<p style="text-align:center;color:#aaa;">Chưa mua gì cả</p>';
+      return;
+    }
+
+    list.innerHTML = '';
+    snap.forEach(doc => {
+      const h = doc.data();
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = `
+        <h4>${h.productName}</h4>
+        <p><strong>Mã key:</strong> <code>${h.key}</code></p>
+        <p><strong>Giá:</strong> ${h.price.toLocaleString()}đ</p>
+        <p><strong>Thời gian:</strong> ${h.time?.toDate().toLocaleString('vi-VN')}</p>
+        ${h.downloadURL ? `<a href="${h.downloadURL}" target="_blank" class="btn btn-primary">Tải source ngay</a>` : ''}
+      `;
+      list.appendChild(div);
+    });
+  } catch (error) {
+    console.error('Lỗi tải lịch sử:', error);
+    list.innerHTML = '<p style="color:#ff5555;">Lỗi tải lịch sử: ' + error.message + '</p>';
+  }
+}
+
+// ==================== NẠP TIỀN & ADMIN ====================
+window.daNap = async () => {
+  if (!currentUser) return alert('Đăng nhập đi bro!');
+  const amount = parseInt(document.getElementById('amountNap').value);
+  if (!amount || amount < 10000) return alert('Tối thiểu 10,000đ');
+  
+  try {
+    await db.collection('pendingPayments').add({
+      uid: currentUser.uid, 
+      amount,
+      time: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'pending'
+    });
+    alert('Đã gửi yêu cầu nạp tiền! Admin sẽ duyệt sớm.');
+    document.getElementById('amountNap').value = '';
+  } catch (error) {
+    alert('Lỗi gửi yêu cầu: ' + error.message);
+  }
+};
+
+async function loadPendingPayments() {
+  if (!isAdmin) return;
+  const container = document.getElementById('pendingPayments');
+  
+  try {
+    const snap = await db.collection('pendingPayments').where('status', '==', 'pending').get();
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:#0f0;">Không có yêu cầu nào</p>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    snap.forEach(doc => {
+      const p = doc.data();
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = `
+        <p><strong>UID:</strong> ${p.uid}</p>
+        <p><strong>Số tiền:</strong> ${p.amount.toLocaleString()}đ</p>
+        <p><strong>Thời gian:</strong> ${p.time?.toDate().toLocaleString('vi-VN') || 'Chưa xác định'}</p>
+        <button class="btn btn-success" onclick="approvePayment('${doc.id}', '${p.uid}', ${p.amount})">Duyệt</button>
+        <button class="btn btn-danger" onclick="denyPayment('${doc.id}')">Từ chối</button>
+      `;
+      container.appendChild(div);
+    });
+  } catch (error) {
+    container.innerHTML = '<p style="color:#ff5555;">Lỗi tải yêu cầu: ' + error.message + '</p>';
+  }
+}
+
+window.approvePayment = async (id, uid, amount) => {
+  if (!isAdmin) return;
+  
+  try {
+    await db.runTransaction(async t => {
+      t.update(db.collection('pendingPayments').doc(id), {status: 'approved'});
+      t.update(db.collection('users').doc(uid), {balance: firebase.firestore.FieldValue.increment(amount)});
+    });
+    alert('Đã duyệt!');
+    loadPendingPayments();
+  } catch (error) {
+    alert('Lỗi duyệt: ' + error.message);
+  }
+};
+
+window.denyPayment = async (id) => {
+  if (!isAdmin) return;
+  
+  try {
+    await db.collection('pendingPayments').doc(id).update({status: 'denied'});
+    alert('Đã từ chối');
+    loadPendingPayments();
+  } catch (error) {
+    alert('Lỗi từ chối: ' + error.message);
+  }
+};
+
+function showSection(sectionId) {
+  // Ẩn tất cả section TRỪ form đăng nhập (nếu chưa đăng nhập)
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(s => {
+    if (s.id === 'authSection' && !currentUser) {
+      // Nếu chưa đăng nhập → giữ nguyên form login, không ẩn nó
+      s.classList.remove('hidden');
+    } else {
+      s.classList.add('hidden');
+    }
+  });
+
+  // Hiện section được chọn
+  const target = document.getElementById(sectionId);
+  if (target) target.classList.remove('hidden');
+
+  // Ẩn/hiện bộ lọc danh mục
+  const categoryFilter = document.querySelector('.category-filter');
+  if (sectionId === 'productsSection') {
+    categoryFilter?.classList.remove('hidden');
+  } else {
+    categoryFilter?.classList.add('hidden');
+  }
+
+  // Load dữ liệu khi chuyển tab
+  if (sectionId === 'historySection' && currentUser) loadHistory();
+  if (sectionId === 'napSection' && currentUser) {
+    document.getElementById('noidungNap').innerText = currentUser.uid.slice(0, 12);
+  }
+  if (sectionId === 'adminPanel' && isAdmin) {
+    loadPendingPayments();
+    loadUsers();
+  }
+
+  // QUAN TRỌNG NHẤT: Nếu chưa đăng nhập và không phải đang ở trang auth → tự động quay về trang đăng nhập
+  if (!currentUser && sectionId !== 'authSection' && sectionId !== 'productsSection') {
+    alert('Vui lòng đăng nhập để sử dụng tính năng này!');
+    showSection('authSection');
+    return;
+  }
+}
+
+// ==================== QUẢN LÝ NGƯỜI DÙNG ====================
+async function loadUsers() {
+  if (!isAdmin) return alert('Chỉ admin mới được dùng!');
+  const container = document.getElementById('usersList');
+  const search = document.getElementById('searchUser').value.toLowerCase().trim();
+  container.innerHTML = '<p>Đang tải danh sách...</p>';
+
+  try {
+    const snap = await db.collection('users').get();
+    let html = '';
+
+    snap.forEach(doc => {
+      const u = doc.data();
+      const uid = doc.id;
+
+      // Lọc tìm kiếm
+      if (search &&
+          !u.username?.toLowerCase().includes(search) &&
+          !u.email?.toLowerCase().includes(search) &&
+          !uid.toLowerCase().includes(search)) {
+        return;
+      }
+
+      const isAdminUser = u.role === 'admin';
+
+      html += `
+        <div class="card" style="padding:18px 20px;margin:12px 0;position:relative;overflow:hidden;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
+            <div style="flex:1;min-width:260px;">
+              <h4 style="margin:0;color:#00ffff;font-size:1.3em;">${u.username || 'Chưa đặt tên'}</h4>
+              <p style="margin:5px 0 8px;color:#aaa;">
+                <strong>Email:</strong> ${u.email}<br>
+                <strong>UID:</strong> <code>${uid}</code>
+              </p>
+              <p style="margin:0;font-size:1.1em;">
+                Số dư: <span style="color:#00ff88;font-weight:600;">${(u.balance || 0).toLocaleString()}đ</span> |
+                Vai trò: <span style="color:${isAdminUser ? '#ff00ff' : '#00ff88'};font-weight:700;">${(u.role || 'user').toUpperCase()}</span>
+              </p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              ${!isAdminUser ? `
+                <button class="btn btn-success" onclick="setRole('${uid}','admin')">
+                  Thăng Admin
+                </button>
+              ` : `
+                <button class="btn" style="background:#ff9500;color:#000;" onclick="setRole('${uid}','user')">
+                  Hạ thành User
+                </button>
+              `}
+              <button class="btn btn-danger" onclick="fineUser('${uid}','${(u.username || uid).replace(/'/g, "\\'")}')">
+                Phạt tiền
+              </button>
+              <button class="btn" style="background:#ff2d55;" onclick="deleteUser('${uid}','${(u.username || uid).replace(/'/g, "\\'")}')">
+                Xóa tài khoản
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
     });
 
-    // 👉 Lọc sản phẩm theo danh mục và sắp xếp (ghim trước, sau đó sản phẩm mới nhất trước)
-    function filterProducts() {
-        let filtered = currentCategory === 'all'
-            ? products
-            : products.filter(p => p.category.includes(currentCategory));
+    container.innerHTML = html || '<p style="text-align:center;color:#aaa;padding:40px;">Không tìm thấy người dùng nào</p>';
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = `<p style="color:#ff5555;text-align:center;">Lỗi: ${e.message}</p>`;
+  }
+}
 
-        // Sắp xếp: Ghim trước (pinned: true), sau đó sắp xếp theo id giảm dần (sản phẩm mới nhất trước)
-        filtered.sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;
-            if (!a.pinned && b.pinned) return 1;
-            return b.id - a.id;  // Sắp xếp id giảm dần cho các sản phẩm không ghim
-        });
+// Tìm kiếm realtime
+document.getElementById('searchUser').addEventListener('input', () => {
+  loadUsers();
+});
 
-        return filtered;
+// Preview image links
+document.getElementById('pImageLinks').addEventListener('input', function() {
+  const preview = document.getElementById('linkPreview');
+  const links = this.value.trim().split('\n').filter(l => l.startsWith('http'));
+  
+  if (links.length === 0) {
+    preview.innerHTML = '<p style="color:#aaa;">Chưa có link ảnh hợp lệ</p>';
+    return;
+  }
+  
+  preview.innerHTML = `
+    <p><strong>Preview (${links.length} ảnh):</strong></p>
+    <div style="display:flex;gap:10px;overflow-x:auto;padding:10px 0;">
+      ${links.map(link => `<img src="${link}" style="height:80px;border-radius:8px;object-fit:cover;">`).join('')}
+    </div>
+  `;
+});
+
+// Thăng / Hạ cấp Admin
+window.setRole = async (uid, newRole) => {
+  if (!isAdmin) return;
+  if (!confirm(`Bạn chắc chắn muốn ${newRole === 'admin' ? 'THĂNG' : 'HẠ'} quyền này?`)) return;
+
+  try {
+    await db.collection('users').doc(uid).update({ role: newRole });
+    alert(`${newRole === 'admin' ? 'Thăng' : 'Hạ'} cấp thành công!`);
+    loadUsers();
+  } catch (err) {
+    alert('Lỗi: ' + err.message);
+  }
+};
+
+// Xóa tài khoản vĩnh viễn
+window.deleteUser = async (uid, username) => {
+  if (!isAdmin) return;
+  if (!confirm(`XÓA HOÀN TOÀN tài khoản "${username}"?\n\nHành động này KHÔNG THỂ HOÀN TÁC!\nTất cả lịch sử mua hàng sẽ bị xóa!`)) return;
+
+  const pass = prompt('Nhập mật khẩu admin để xác nhận xóa (bảo mật):');
+  if (pass !== 'sangdev123') return alert('Sai mật khẩu admin!');
+
+  try {
+    // Xóa lịch sử mua
+    const historySnap = await db.collection('history').where('uid', '==', uid).get();
+    const batch = db.batch();
+    historySnap.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+
+    // Xóa yêu cầu nạp tiền
+    const pendingSnap = await db.collection('pendingPayments').where('uid', '==', uid).get();
+    const batch2 = db.batch();
+    pendingSnap.forEach(doc => batch2.delete(doc.ref));
+    await batch2.commit();
+
+    // Xóa user
+    await db.collection('users').doc(uid).delete();
+
+    alert(`Đã xóa sạch tài khoản "${username}"!`);
+    loadUsers();
+  } catch (err) {
+    alert('Lỗi xóa: ' + err.message);
+  }
+};
+
+// Phạt tiền
+window.fineUser = async (uid, username) => {
+  if (!isAdmin) return;
+  const amount = prompt(`Phạt bao nhiêu tiền từ "${username}"?\n(Ví dụ: 50000)`);
+  if (!amount || isNaN(amount) || amount <= 0) return alert('Nhập số tiền hợp lệ!');
+
+  const reason = prompt('Lý do phạt (bắt buộc):', 'Vi phạm nội quy shop');
+  if (!reason) return alert('Phải ghi lý do!');
+
+  if (!confirm(`Phạt ${parseInt(amount).toLocaleString()}đ từ "${username}"?\nLý do: ${reason}`)) return;
+
+  try {
+    await db.runTransaction(async (t) => {
+      const userRef = db.collection('users').doc(uid);
+      const userSnap = await t.get(userRef);
+      const current = userSnap.data().balance || 0;
+
+      if (current < amount) throw new Error('Không đủ tiền để phạt!');
+
+      t.update(userRef, {
+        balance: firebase.firestore.FieldValue.increment(-parseInt(amount))
+      });
+
+      // Ghi log phạt
+      t.set(db.collection('history').doc(), {
+        uid,
+        productName: `[PHẠT TIỀN] ${reason}`,
+        price: parseInt(amount),
+        key: 'FINE',
+        time: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+
+    alert(`Đã phạt thành công ${amount.toLocaleString()}đ!`);
+    loadUsers();
+  } catch (err) {
+    alert('Lỗi phạt: ' + err.message);
+  }
+};
+
+// ==================== UI CONTROLS ====================
+// Toggle submenu
+function toggleSubmenu(el) {
+  el.classList.toggle('active');
+  el.nextElementSibling.classList.toggle('active');
+}
+
+// Mobile menu
+document.getElementById('mobileMenuBtn').onclick = () => {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Modal báo cáo
+document.getElementById('adminReportBtn').onclick = () => {
+  document.getElementById('adminReportModal').classList.add('active');
+}
+document.querySelector('.close-modal').onclick = () => {
+  document.getElementById('adminReportModal').classList.remove('active');
+}
+document.getElementById('adminReportModal').onclick = (e) => {
+  if (e.target === document.getElementById('adminReportModal')) {
+    e.target.classList.remove('active');
+  }
+}
+
+// Easter egg: click avatar 10 lần
+let clickCount = 0;
+document.getElementById('adminAvatar').onclick = () => {
+  if (++clickCount === 10) {
+    window.open('pass.html', '_blank');
+  }
+}
+// ==================== PHÂN TRANG 9 SẢN PHẨM / TRANG ====================
+let allProducts = [];
+let currentPage = 1;
+const itemsPerPage = 9;
+
+async function loadProducts() {
+  const container = document.getElementById('products');
+  container.innerHTML = '<p style="text-align:center; color:#aaa; grid-column:1/-1;">Đang tải sản phẩm...</p>';
+  
+  try {
+    const snap = await db.collection('products').orderBy('createdAt', 'desc').get();
+    allProducts = [];
+    
+    snap.forEach(doc => {
+      const p = doc.data();
+      p.id = doc.id;
+      allProducts.push(p);
+    });
+
+    renderCurrentPage();
+    setupPagination();
+  } catch (err) {
+    container.innerHTML = '<p style="color:#ff5555; text-align:center;">Lỗi tải sản phẩm!</p>';
+  }
+}
+
+function renderCurrentPage() {
+  const container = document.getElementById('products');
+  container.innerHTML = '';
+
+  const start = (currentPage - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  const pageItems = allProducts.slice(start, end);
+
+  if (pageItems.length === 0) {
+    container.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#aaa;">Không có sản phẩm nào</p>';
+    document.getElementById('pagination').style.display = 'none';
+    return;
+  }
+
+  pageItems.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.dataset.category = p.category || 'premium';
+
+    const carousel = p.images?.length > 0 ? `
+      <div class="carousel-container">
+        <div class="carousel">
+          ${[...p.images, ...p.images].map((img, i) => `
+            <img src="${img}" onclick="openLightbox(${JSON.stringify(p.images)}, ${i % p.images.length})" style="cursor:pointer;">
+          `).join('')}
+        </div>
+        <button onclick="openLightbox(${JSON.stringify(p.images)},0)" 
+          style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:6px 12px;border:none;border-radius:8px;cursor:pointer;font-size:0.9em;z-index:10;">
+          Xem demo (${p.images.length})
+        </button>
+      </div>` : '<div style="background:#222;height:220px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#666;">Không có ảnh</div>';
+
+    const categoryBadge = p.category ? `<span class="category-badge category-${p.category}">${getCategoryName(p.category)}</span>` : '';
+    
+    const buyButton = p.stock > 0 
+      ? `<button class="btn btn-primary" onclick="buy('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${p.downloadURL || ''}')">Mua ngay</button>`
+      : `<button class="btn" disabled style="background:#555; opacity:0.7; cursor:not-allowed;">Hết hàng</button>`;
+
+    div.innerHTML = `
+      <h3>${p.name}</h3>
+      ${categoryBadge}
+      ${carousel}
+      <p style="margin:10px 0; line-height:1.6;">${p.desc.replace(/\n/g, '<br>')}</p>
+      <p><strong>Giá:</strong> <span style="color:#00ffff; font-size:1.3em;">${p.price.toLocaleString()}đ</span></p>
+      <p><strong>Còn lại:</strong> <span style="color:${p.stock > 0 ? '#0f0' : '#f55'}">${p.stock}</span></p>
+      ${buyButton}
+      ${isAdmin ? `<div style="margin-top:10px;">
+        <button class="btn btn-success" onclick="editProduct('${p.id}')">Sửa</button>
+        <label style="margin-left:10px;"><input type="checkbox" class="delCheck" value="${p.id}"> Xóa</label>
+      </div>` : ''}
+    `;
+    container.appendChild(div);
+  });
+
+  // Cập nhật lại bộ lọc danh mục sau khi render
+  filterProducts(document.querySelector('.category-btn.active')?.dataset.category || 'all');
+  document.getElementById('pagination').style.display = 'flex';
+}
+
+function setupPagination() {
+  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+  const pageNumbers = document.getElementById('pageNumbers');
+  pageNumbers.innerHTML = '';
+
+  // Giới hạn hiển thị tối đa 7 số trang (đẹp mắt)
+  let startPage = Math.max(1, currentPage - 3);
+  let endPage = Math.min(totalPages, currentPage + 3);
+
+  if (endPage - startPage < 6) {
+    if (currentPage < 4) endPage = Math.min(totalPages, 7);
+    if (currentPage > totalPages - 3) startPage = Math.max(1, totalPages - 6);
+  }
+
+  // Nút đầu
+  if (startPage > 1) {
+    addPageBtn(1);
+    if (startPage > 2) pageNumbers.innerHTML += '<span style="color:#888;">...</span>';
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    addPageBtn(i);
+  }
+
+  // Nút cuối
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pageNumbers.innerHTML += '<span style="color:#888;">...</span>';
+    addPageBtn(totalPages);
+  }
+
+  // Cập nhật nút trước/sau
+  document.getElementById('prevBtn').disabled = currentPage === 1;
+  document.getElementById('nextBtn').disabled = currentPage === totalPages;
+
+  // Cập nhật ô nhập trang
+  document.getElementById('gotoPage').value = currentPage;
+  document.getElementById('gotoPage').max = totalPages;
+
+  function addPageBtn(page) {
+    const btn = document.createElement('div');
+    btn.className = 'page-number';
+    btn.textContent = page;
+    if (page === currentPage) btn.classList.add('active');
+    btn.onclick = () => changePage(page);
+    pageNumbers.appendChild(btn);
+  }
+}
+
+function changePage(page) {
+  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+  if (page < 1 || page > totalPages || page === currentPage) return;
+  currentPage = page;
+  renderCurrentPage();
+  setupPagination();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Sự kiện nút Trước / Sau
+document.getElementById('prevBtn').onclick = () => changePage(currentPage - 1);
+document.getElementById('nextBtn').onclick = () => changePage(currentPage + 1);
+
+// Nhập số trang + Enter
+document.getElementById('gotoPage').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    let val = parseInt(e.target.value);
+    if (!isNaN(val)) changePage(val);
+  }
+});
+document.getElementById('gotoPage').addEventListener('change', (e) => {
+  let val = parseInt(e.target.value);
+  if (!isNaN(val)) changePage(val);
+});
+// ==================== FIX SỐ DƯ 100% - KHÔNG CẦN SỬA HTML NỮA ====================
+(function() {
+  // Tạo chỗ hiển thị số dư ngay dưới dòng "Shop Mã Nguồn Private" (tự động tìm đúng vị trí)
+  const header = document.querySelector('.sidebar-header p');
+  if (header && !document.getElementById('autoBalance')) {
+    const balanceP = document.createElement('p');
+    balanceP.id = 'autoBalance';
+    balanceP.style.cssText = 'margin:10px 0 0 !important;font-size:1.1em;color:#0f0;font-weight:600;text-align:center;';
+    balanceP.innerHTML = '<i class="fas fa-wallet"></i> Số dư: <span id="balance" style="color:#00ffff;font-weight:700;">0đ</span>';
+    header.parentNode.insertBefore(balanceP, header.nextSibling);
+  }
+
+  // Hàm cập nhật số dư (dùng lại cái có sẵn của bạn)
+  window.updateBalance = async function() {
+    if (!currentUser) {
+      const el = document.getElementById('balance');
+      if (el) el.textContent = 'Chưa đăng nhập';
+      return;
     }
+    try {
+      const snap = await db.collection('users').doc(currentUser.uid).get();
+      const bal = (snap.data()?.balance || 0).toLocaleString();
+      const el = document.getElementById('balance');
+      if (el) el.innerHTML = `<strong>${bal}đ</strong>`;
+    } catch(e) { console.log(e); }
+  };
 
-    // 👉 Hiển thị sản phẩm theo trang
-    function displayProductsForPage(page) {
-        const productsGrid = document.getElementById('productsGrid');
-        if (!productsGrid) return;
-        productsGrid.innerHTML = '';
+  // Tự động chạy khi đăng nhập + mỗi 8 giây
+  auth.onAuthStateChanged(user => { currentUser = user; updateBalance(); });
+  setInterval(updateBalance, 8000);
+  
+  // Gọi ngay lần đầu
+  setTimeout(updateBalance, 1000);
+})();
 
-        const filtered = filterProducts();
-        const start = (page - 1) * productsPerPage;
-        const end = Math.min(start + productsPerPage, filtered.length);
-
-        for (let i = start; i < end; i++) {
-            const p = filtered[i];
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.setAttribute('data-id', p.id);
-
-            card.innerHTML = `
-                <div class="product-image">
-                    <img src="${p.imageUrl}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Ảnh+lỗi'">
-                    ${p.price === "Miễn phí" ? '<div class="product-badge">MIỄN PHÍ</div>' : ''}
-                    ${p.pinned ? '<div class="product-badge" style="background: var(--warning);">GHIM</div>' : ''}
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">${p.title}</h3>
-                    <p class="product-description">${p.description}</p>
-                    <div class="product-price">${p.price}</div>
-                    <div class="product-meta">
-                        <div class="product-rating">${generateStarRating(p.rating)}</div>
-                        <div class="product-downloads"><i class="fas fa-download"></i> ${p.downloads.toLocaleString()}</div>
-                    </div>
-                </div>
-            `;
-
-            card.addEventListener('click', () => {
-                currentProduct = p;
-                showProductModal(p);
-            });
-
-            productsGrid.appendChild(card);
-        }
-    }
-
-    // 👉 Đánh giá sao
-    function generateStarRating(rating) {
-        let stars = '';
-        const full = Math.floor(rating);
-        const half = rating % 1 >= 0.5;
-
-        for (let i = 0; i < full; i++) stars += '<i class="fas fa-star"></i>';
-        if (half) stars += '<i class="fas fa-star-half-alt"></i>';
-        for (let i = full + (half ? 1 : 0); i < 5; i++) stars += '<i class="far fa-star"></i>';
-
-        return stars + ` ${rating}`;
-    }
-
-    // 👉 Phân trang
-    function setupPagination() {
-        const pagination = document.getElementById('pagination');
-        if (!pagination) return;
-        pagination.innerHTML = '';
-
-        const filtered = filterProducts();
-        const totalPages = Math.ceil(filtered.length / productsPerPage);
-        if (totalPages <= 1) return;
-
-        // prev
-        if (currentPage > 1) {
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'pagination-btn';
-            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-            prevBtn.onclick = () => { 
-                currentPage--; 
-                displayProductsForPage(currentPage); 
-                setupPagination(); 
-                window.scrollTo(0,0); 
-            };
-            pagination.appendChild(prevBtn);
-        }
-
-        const maxVisible = 5;
-        let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let end = Math.min(totalPages, start + maxVisible - 1);
-        if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
-
-        for (let i = start; i <= end; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = 'pagination-btn';
-            if (i === currentPage) pageBtn.classList.add('active');
-            pageBtn.textContent = i;
-            pageBtn.onclick = () => { 
-                currentPage = i; 
-                displayProductsForPage(currentPage); 
-                setupPagination(); 
-                window.scrollTo(0,0); 
-            };
-            pagination.appendChild(pageBtn);
-        }
-
-        // next
-        if (currentPage < totalPages) {
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'pagination-btn';
-            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-            nextBtn.onclick = () => { 
-                currentPage++; 
-                displayProductsForPage(currentPage); 
-                setupPagination(); 
-                window.scrollTo(0,0); 
-            };
-            pagination.appendChild(nextBtn);
-        }
-    }
-
-    // 👉 Modal chi tiết sản phẩm
-    function showProductModal(product) {
-        const modalContent = document.getElementById('modalProductContent');
-        if (!modalContent) return;
-        modalContent.innerHTML = `
-            <div class="modal-product-image">
-                <img src="${product.imageUrl}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/800x400?text=Ảnh+lỗi'">
-            </div>
-            <div class="modal-product-details">
-                <div class="modal-product-info">
-                    <h3 class="modal-product-title">${product.title}</h3>
-                    <div class="modal-product-price">${product.price}</div>
-                    <p class="modal-product-description">${product.detailedDescription}</p>
-                </div>
-                <div class="modal-product-features">
-                    <h4>Tính năng nổi bật</h4>
-                    <ul>${product.features.map(f => `<li>${f}</li>`).join('')}</ul>
-                </div>
-                <div class="modal-actions">
-                    <a href="${product.demoUrl}" target="_blank" class="btn btn-demo"><i class="fas fa-external-link-alt"></i> Xem Demo</a>
-                    <button class="btn btn-download" onclick="window.location.href='${product.fileUrl}'"><i class="fas fa-download"></i> Tải Về</button>
-                </div>
-            </div>
-        `;
-        document.getElementById('productModal').style.display = 'flex';
-    }
 </script>
-<script src="/off.js"></script>
 
-
-    <!-- ko hack dc đâu đừng hòng mún code thì ib mấy thak lòn dell có của đâu -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
