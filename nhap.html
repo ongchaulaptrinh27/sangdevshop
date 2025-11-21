@@ -1,962 +1,400 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Công Cụ Hack - Admin dev sang</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg: #0b0f17;
-      --panel: rgba(255,255,255,0.06);
-      --text: #e8eefc;
-      --muted: #a9b2c7;
-      --primary: #7c4dff;
-      --accent: #00e5ff;
-      --ring: 0 0 0 3px rgba(124,77,255,0.35);
-      --blur: 16px;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --grad: radial-gradient(1000px 600px at 10% -10%, rgba(0,229,255,.25), transparent 60%),
-              radial-gradient(900px 700px at 110% 10%, rgba(124,77,255,.25), transparent 60%),
-              linear-gradient(180deg, #0b0f17 0%, #0b0f17 100%);
-    }
-    [data-theme="light"]{
-      --bg: #f5f7ff;
-      --panel: rgba(20,22,34,0.06);
-      --text: #111320;
-      --muted: #4a5568;
-      --primary: #5b43ff;
-      --accent: #0bb5ff;
-      --shadow: 0 10px 30px rgba(0,0,0,.1);
-      --grad: radial-gradient(800px 600px at -10% -10%, rgba(11,181,255,.2), transparent 60%),
-              radial-gradient(900px 700px at 110% 10%, rgba(91,67,255,.18), transparent 60%),
-              linear-gradient(180deg, #f5f7ff 0%, #ffffff 100%);
-    }
-
-    *{ box-sizing: border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      background: var(--grad);
-      overflow-x:hidden;
-    }
-
-    /* ===== Top Navigation ===== */
-    .nav-wrap{
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(var(--blur));
-      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .nav{
-      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
-      display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
-    }
-    .brand{ display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--text); }
-    .logo{
-      width:36px; height:36px; border-radius:12px; background: linear-gradient(135deg, var(--primary), var(--accent));
-      position:relative; box-shadow: 0 0 25px rgba(124,77,255,.45), inset 0 0 20px rgba(255,255,255,.08);
-    }
-    .logo::after{
-      content:""; position:absolute; inset:8px; border-radius:8px; background:rgba(255,255,255,.2); filter: blur(6px);
-    }
-    .brand span{ font-weight:800; letter-spacing:.3px; font-size: 18px; }
-
-    .menu{ display:flex; gap: 6px; align-items:center; justify-content:center; }
-    .menu a{
-      --pad: 10px 14px;
-      text-decoration:none; color: var(--text); padding: var(--pad);
-      border-radius: 12px; position: relative; font-weight:600; font-size:14px; opacity:.95;
-    }
-    .menu a:hover{ opacity:1; }
-    .menu a::after{ /* neon underline */
-      content:""; position:absolute; left:12px; right:12px; bottom:6px; height:2px; border-radius:2px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--primary), transparent);
-      transform: scaleX(0); transform-origin: center; transition: transform .28s ease;
-      box-shadow: 0 0 12px rgba(0,229,255,.6);
-    }
-    .menu a:hover::after{ transform: scaleX(1); }
-
-    /* Actions */
-    .actions{ display:flex; gap:10px; align-items:center; }
-    .search{ position:relative; }
-    .search input{
-      background: var(--panel); color: var(--text); border:1px solid rgba(255,255,255,.08);
-      border-radius: 12px; padding: 10px 36px 10px 36px; outline: none; transition: box-shadow .2s ease;
-    }
-    .search input:focus{ box-shadow: var(--ring); }
-    .icon{ position:absolute; top:50%; transform: translateY(-50%); width:18px; height:18px; opacity:.8; }
-    .icon.left{ left:12px; }
-    .icon.right{ right:12px; cursor:pointer; }
-
-    .btn{
-      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--accent)); color:white; font-weight:700; border:none; cursor:pointer;
-      box-shadow: 0 10px 24px rgba(124,77,255,.35), 0 6px 14px rgba(11,181,255,.25);
-    }
-    .btn:active{ transform: translateY(1px); }
-
-    .theme-toggle{
-      width:42px; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
-      background: var(--panel); display:grid; place-items:center; cursor:pointer;
-    }
-
-    /* ===== Mobile ===== */
-    .hamburger{ display:none; width:42px; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.1); background:var(--panel); cursor:pointer; position:relative; }
-    .hamburger span{ position:absolute; left:10px; right:10px; height:2px; background:var(--text); transition:.25s ease; border-radius:2px; }
-    .hamburger span:nth-child(1){ top:12px; }
-    .hamburger span:nth-child(2){ top:20px; }
-    .hamburger span:nth-child(3){ top:28px; }
-    .hamburger.active span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
-    .hamburger.active span:nth-child(2){ opacity:0; }
-    .hamburger.active span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
-
-    .mobile-drawer{
-      position: fixed; inset:0; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); display:none;
-    }
-    .mobile-panel{
-      position:absolute; top:0; left:0; height:100%; width:min(86vw, 360px);
-      background: var(--bg); border-right:1px solid rgba(255,255,255,.08); padding:20px; transform: translateX(-100%);
-      transition: transform .28s ease; overflow:auto;
-    }
-    .mobile-drawer.open{ display:block; }
-    .mobile-drawer.open .mobile-panel{ transform: translateX(0); }
-
-    .mobile-list a{ display:block; padding:12px 10px; border-radius:10px; color:var(--text); text-decoration:none; }
-    .mobile-list a:hover{ background: rgba(255,255,255,.06); }
-    .mobile-sub{ margin-left:8px; border-left:2px dashed rgba(255,255,255,.12); padding-left:10px; }
-
-    /* ===== Hero (for visual flair) ===== */
-    .hero{ max-width: 1200px; margin: 44px auto; padding: 0 20px 80px; display:grid; grid-template-columns: 1.3fr 1fr; gap: 26px; align-items:center; }
-    .hero h1{ margin:0 0 10px; font-size: clamp(28px, 4.2vw, 56px); line-height:1.05; }
-    .hero p{ margin:0 0 20px; color:var(--muted); font-size: clamp(14px, 1.4vw, 18px); }
-    .hero .panel{
-      background: var(--panel); border:1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 18px; backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-    }
-    .badge{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-size:12px; background: rgba(124,77,255,.14); border: 1px solid rgba(124,77,255,.25); }
-    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:12px; background: rgba(255,255,255,.08); padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.12); }
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
-    .chip{ padding:8px 10px; border-radius: 10px; border:1px dashed rgba(255,255,255,.16); background: rgba(255,255,255,.06); font-size:12px; }
-    
-    /* ===== Hacker Terminal ===== */
-    .hacker-section {
-      max-width: 1200px;
-      margin: 0 auto 80px;
-      padding: 0 20px;
-    }
-    
-    .hacker-terminal {
-      background: rgba(0, 10, 20, 0.85);
-      border: 1px solid rgba(0, 229, 255, 0.3);
-      border-radius: 12px;
-      padding: 20px;
-      font-family: 'Courier New', monospace;
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hacker-terminal::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      animation: scanline 3s linear infinite;
-    }
-    
-    @keyframes scanline {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-    
-    .terminal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(0, 229, 255, 0.2);
-    }
-    
-    .terminal-title {
-      color: var(--accent);
-      font-weight: bold;
-      font-size: 18px;
-      text-shadow: 0 0 5px var(--accent);
-    }
-    
-    .terminal-controls {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .terminal-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    
-    .terminal-btn.close { background: #ff5f56; }
-    .terminal-btn.minimize { background: #ffbd2e; }
-    .terminal-btn.maximize { background: #27c93f; }
-    
-    .terminal-content {
-      min-height: 200px;
-      margin-bottom: 15px;
-    }
-    
-    .terminal-line {
-      color: #0f0;
-      margin-bottom: 5px;
-      opacity: 0;
-      animation: typeLine 0.5s forwards;
-    }
-    
-    @keyframes typeLine {
-      to { opacity: 1; }
-    }
-    
-    .terminal-line:nth-child(1) { animation-delay: 0.5s; }
-    .terminal-line:nth-child(2) { animation-delay: 1s; }
-    .terminal-line:nth-child(3) { animation-delay: 1.5s; }
-    .terminal-line:nth-child(4) { animation-delay: 2s; }
-    .terminal-line:nth-child(5) { animation-delay: 2.5s; }
-    .terminal-line:nth-child(6) { animation-delay: 3s; }
-    
-    .terminal-input {
-      display: flex;
-      align-items: center;
-      margin-top: 15px;
-    }
-    
-    .terminal-prompt {
-      color: var(--accent);
-      margin-right: 8px;
-    }
-    
-    .terminal-input-field {
-      background: transparent;
-      border: none;
-      color: #0f0;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      width: 100%;
-      outline: none;
-      caret-color: #0f0;
-    }
-    
-    .notes-section {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.1);
-    }
-    
-    .notes-title {
-      color: var(--accent);
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    
-    .notes-input {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(0, 229, 255, 0.2);
-      border-radius: 6px;
-      padding: 10px;
-      color: var(--text);
-      font-family: inherit;
-      margin-bottom: 10px;
-      resize: vertical;
-      min-height: 80px;
-    }
-    
-    .notes-save {
-      background: rgba(0, 229, 255, 0.2);
-      border: 1px solid rgba(0, 229, 255, 0.3);
-      color: var(--text);
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-    
-    .notes-save:hover {
-      background: rgba(0, 229, 255, 0.3);
-    }
-    
-    .hacker-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .hack-btn {
-      background: rgba(124, 77, 255, 0.15);
-      border: 1px solid rgba(124, 77, 255, 0.3);
-      color: var(--text);
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-      flex: 1;
-      min-width: 120px;
-      text-align: center;
-    }
-    
-    .hack-btn:hover {
-      background: rgba(124, 77, 255, 0.25);
-      box-shadow: 0 0 10px rgba(124, 77, 255, 0.3);
-    }
-    
-    /* ===== Tool Section ===== */
-    .tools-section {
-      max-width: 1200px;
-      margin: 0 auto 80px;
-      padding: 0 20px;
-    }
-    
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    
-    .tool-card {
-      background: var(--panel);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      padding: 20px;
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      transition: transform 0.3s ease;
-    }
-    
-    .tool-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .tool-card h3 {
-      margin-top: 0;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .tool-icon {
-      width: 24px;
-      height: 24px;
-      color: var(--accent);
-    }
-    
-    .tool-card p {
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-    
-    .tool-input {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 10px;
-      color: var(--text);
-      margin-bottom: 15px;
-    }
-    
-    .tool-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .tool-btn:hover {
-      opacity: 0.9;
-    }
-    
-    .tool-result {
-      margin-top: 15px;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      border: 1px dashed rgba(255, 255, 255, 0.1);
-      font-size: 14px;
-    }
-    
-    .tool-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-      font-size: 12px;
-    }
-    
-    .status-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-    
-    .status-indicator.offline {
-      background: #ff4757;
-    }
-    
-    @media (max-width: 980px){
-      .menu, .actions .btn{ display:none; }
-      .hamburger{ display:block; }
-      .nav{ grid-template-columns: auto 1fr auto auto; }
-      .hero{ grid-template-columns: 1fr; }
-      .tools-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>ADMIN PANEL - SANG DEV SHOP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0d0d1e;color:#fff;background:linear-gradient(135deg,#0f0f1e,#1a1a3a);min-height:100vh;}
+.container{max-width:1400px;margin:0 auto;padding:20px;}
+h1,h2,h3{text-align:center;margin:30px 0;background:linear-gradient(45deg,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;}
+.card{background:rgba(255,255,255,0.05);border-radius:16px;padding:25px;margin:20px 0;border:1px solid rgba(0,255,255,0.2);backdrop-filter:blur(12px);}
+.btn{padding:12px 28px;border:none;border-radius:12px;cursor:pointer;font-weight:600;margin:8px;transition:0.3s;}
+.btn-primary{background:#00ffff;color:#000;}
+.btn-primary:hover{background:#00cccc;}
+.btn-danger{background:#ff2d55;color:#fff;}
+.btn-success{background:#00ff88;color:#000;}
+input,textarea,select,button{width:100%;padding:14px;border-radius:10px;border:none;background:rgba(255,255,255,0.1);color:#fff;margin:10px 0;outline:none;font-size:1em;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:25px;}
+.category-badge{display:inline-block;padding:6px 14px;border-radius:20px;font-size:0.8em;margin:5px;font-weight:600;}
+.category-premium{background:#ffd700;color:#000;}
+.category-free{background:#00ff88;color:#000;}
+.category-love{background:#ff2d55;color:#fff;}
+.category-3js{background:#00ffff;color:#000;}
+.category-wed{background:#bf5fff;color:#fff;}
+.category-all{background:#888;color:#fff;}
+#loginBox{text-align:center;max-width:400px;margin:100px auto;}
+#adminContent{display:none;}
+</style>
 </head>
 <body>
-  <!-- ===== Top Nav ===== -->
-  <div class="nav-wrap">
-    <nav class="nav" aria-label="Thanh điều hướng chính">
-      <a class="brand" href="#">
-        <div class="logo" aria-hidden="true"></div>
-        <span>ADMIN dev sang</span>
-      </a>
 
-      <div class="menu" role="menubar">
-        <a role="menuitem" href="#">Trang chủ</a>
-        <a role="menuitem" href="ngdung.html" target="_blank">Người dùng</a>
-
-        
-      </div>
-
-      <div class="actions">
-        <div class="search" role="search">
-          <svg class="icon left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input id="q" type="search" placeholder="Tìm nhanh… (/)" aria-label="Tìm kiếm" />
-          <svg id="clear" class="icon right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </div>
-        <button id="theme" class="theme-toggle" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
-          <svg id="sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        </button>
-        <button id="hamburger" class="hamburger" aria-label="Mở menu di động" aria-controls="drawer" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </nav>
+<div class="container">
+  <!-- Đăng nhập Admin -->
+  <div id="loginBox" class="card">
+    <h1>ADMIN PANEL</h1>
+    <p>Chỉ Admin mới được truy cập</p>
+    <input type="email" id="adminEmail" placeholder="Email Admin">
+    <input type="password" id="adminPass" placeholder="Mật khẩu">
+    <button class="btn btn-primary" onclick="adminLogin()">Đăng nhập Admin</button>
   </div>
 
-  <!-- ===== Mobile Drawer ===== -->
-  <div id="drawer" class="mobile-drawer" aria-hidden="true">
-    <aside class="mobile-panel" role="dialog" aria-label="Menu di động">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-        <a class="brand" href="#"><div class="logo" aria-hidden="true"></div><span>ADMIN dev sang</span></a>
-        <button id="closeDrawer" class="theme-toggle" aria-label="Đóng">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-      </div>
-      <div class="mobile-list" style="margin-top:14px;">
-        <a href="#">Trang chủ</a>
-        <a href="#" onclick="window.location.href='admin2.html'">Công cụ</a>
+  <!-- Nội dung Admin -->
+  <div id="adminContent">
+    <h1>QUẢN TRỊ SANG DEV SHOP</h1>
+    <p style="text-align:center;color:#0f0;">Chào mừng Admin trở lại!</p>
+    <button class="btn btn-danger" onclick="adminLogout()" style="width:auto;display:inline-block;">Đăng xuất</button>
 
-        <a href="#">Hệ thống</a>
+    <!-- Form Thêm / Sửa sản phẩm -->
+    <div class="card">
+      <h2 id="formTitle">Thêm sản phẩm mới</h2>
+      
+      <input type="text" id="pName" placeholder="Tên sản phẩm">
+      <textarea id="pDesc" rows="4" placeholder="Mô tả sản phẩm (hỗ trợ HTML)"></textarea>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+        <input type="number" id="pPrice" placeholder="Giá tiền (VNĐ)" min="1000">
+        <input type="number" id="pStock" placeholder="Số lượng key còn lại" min="1">
       </div>
-      <div style="margin-top:18px; display:flex; gap:10px;">
-        <button id="theme2" class="theme-toggle" aria-label="Đổi giao diện sáng/tối">🌓</button>
+
+      <input type="url" id="pDownloadURL" placeholder="Link tải source (sau khi mua)">
+
+      <label><strong>Phân loại (có thể chọn nhiều - giữ Ctrl/Cmd)</strong></label>
+      <select id="pCategory" multiple size="6" style="height:auto;">
+        <option value="all">Tất cả</option>
+        <option value="premium">Trả phí</option>
+        <option value="free">Miễn phí</option>
+        <option value="love">Tình yêu</option>
+        <option value="3js">ThreeJS</option>
+        <option value="wed">Website</option>
+      </select>
+      <small>Nhấn giữ Ctrl (Windows) hoặc Cmd (Mac) để chọn nhiều danh mục</small>
+
+      <textarea id="pImageLinks" rows="5" placeholder="Dán link ảnh demo (mỗi link 1 dòng)"></textarea>
+      <div id="imagePreview" style="margin:15px 0;display:flex;gap:10px;flex-wrap:wrap;"></div>
+
+      <div style="text-align:center;">
+        <button class="btn btn-primary" id="saveBtn" onclick="saveProduct()">Thêm sản phẩm</button>
+        <button class="btn btn-danger" onclick="cancelEdit()">Hủy chỉnh sửa</button>
       </div>
-    </aside>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <h2>Danh sách sản phẩm</h2>
+    <div id="productsList" class="grid"></div>
+
+    <hr style="margin:50px 0;border-color:#333;">
+
+    <!-- Quản lý người dùng -->
+    <h2>Quản lý người dùng</h2>
+    <div style="margin-bottom:20px;display:flex;gap:10px;">
+      <input type="text" id="searchUser" placeholder="Tìm theo tên, email, UID..." style="flex:1;">
+      <button class="btn btn-primary" onclick="loadUsers()">Tải lại</button>
+    </div>
+    <div id="usersList"></div>
   </div>
-
-  <!-- ===== Hero (demo area) ===== -->
-  <section class="hero">
-    <div>
-      <span class="badge">✨ đây là trang dành cho admin</span>
-      <h1>chào mừng admin <span style="background:linear-gradient(90deg,var(--accent),var(--primary));-webkit-background-clip:text;background-clip:text;color:transparent;">trở về</span> </h1>
-      <p>Hệ thống công cụ hack mạnh mẽ dành riêng cho admin. Chỉ dành cho người dùng được ủy quyền.</p>
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <button class="btn">Bắt đầu</button>
-        <span class="kbd"></span>
-        <span class="kbd">/</span>
-      </div>
-    </div>
-    <div class="panel">
-      <strong style="display:block; margin-bottom:8px;">lưu ý</strong>
-      <ul style="margin:0; padding-left:18px; color: var(--muted); line-height:1.6;">
-        <li>chỉ dành cho nhà sáng tạo, khách không được sử dụng</li>
-        <li>Hệ thống đang ở chế độ bảo mật cao</li>
-        <li>Mọi hành động đều được ghi lại</li>
-        <li>Vui lòng sử dụng có trách nhiệm</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ===== Tools Section ===== -->
-  <section class="tools-section">
-    <h2 style="text-align: center; margin-bottom: 40px; color: var(--accent);">CÔNG CỤ HACK</h2>
-    
-    <div class="tools-grid">
-      <!-- Facebook Tool -->
-      <div class="tool-card">
-        <h3>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-          </svg>
-          Facebook Hack
-        </h3>
-        <p>Công cụ hack Facebook, lấy thông tin tài khoản và bỏ qua bảo mật.</p>
-        <input type="text" class="tool-input" placeholder="URL Facebook hoặc ID người dùng" id="fb-input">
-        <button class="tool-btn" onclick="hackFacebook()">Bắt Đầu Hack</button>
-        <div class="tool-result" id="fb-result">
-          Kết quả sẽ hiển thị ở đây...
-        </div>
-        <div class="tool-status">
-          <div class="status-indicator"></div>
-          <span>Sẵn sàng</span>
-        </div>
-      </div>
-      
-      <!-- TikTok Tool -->
-      <div class="tool-card">
-        <h3>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 12l2 2 4-4"></path>
-            <path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V7z"></path>
-          </svg>
-          TikTok Buff
-        </h3>
-        <p>Tăng view, like và follower cho tài khoản TikTok tự động.</p>
-        <input type="text" class="tool-input" placeholder="@username TikTok" id="tiktok-input">
-        <button class="tool-btn" onclick="buffTikTok()">Bắt Đầu Buff</button>
-        <div class="tool-result" id="tiktok-result">
-          Kết quả sẽ hiển thị ở đây...
-        </div>
-        <div class="tool-status">
-          <div class="status-indicator"></div>
-          <span>Sẵn sàng</span>
-        </div>
-      </div>
-      
-      <!-- Instagram Tool -->
-      <div class="tool-card">
-        <h3>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-          Instagram Tool
-        </h3>
-        <p>Tăng follower, lượt thích và bình luận cho tài khoản Instagram.</p>
-        <input type="text" class="tool-input" placeholder="@username Instagram" id="ig-input">
-        <button class="tool-btn" onclick="hackInstagram()">Bắt Đầu</button>
-        <div class="tool-result" id="ig-result">
-          Kết quả sẽ hiển thị ở đây...
-        </div>
-        <div class="tool-status">
-          <div class="status-indicator"></div>
-          <span>Sẵn sàng</span>
-        </div>
-      </div>
-      
-      <!-- WiFi Tool -->
-      <div class="tool-card">
-        <h3>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-            <circle cx="12" cy="20" r="1"></circle>
-          </svg>
-          WiFi Hack
-        </h3>
-        <p>Bẻ khóa mật khẩu WiFi và phân tích mạng không dây xung quanh.</p>
-        <input type="text" class="tool-input" placeholder="Tên mạng WiFi (SSID)" id="wifi-input">
-        <button class="tool-btn" onclick="hackWifi()">Quét & Bẻ Khóa</button>
-        <div class="tool-result" id="wifi-result">
-          Kết quả sẽ hiển thị ở đây...
-        </div>
-        <div class="tool-status">
-          <div class="status-indicator"></div>
-          <span>Sẵn sàng</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Hacker Terminal ===== -->
-  <section class="hacker-section">
-    <div class="hacker-terminal">
-      <div class="terminal-header">
-        <div class="terminal-title">HACKER TERMINAL - ADMIN MODE</div>
-        <div class="terminal-controls">
-          <div class="terminal-btn close"></div>
-          <div class="terminal-btn minimize"></div>
-          <div class="terminal-btn maximize"></div>
-        </div>
-      </div>
-      
-      <div class="terminal-content">
-        <div class="terminal-line">> WELCOME BACK, ADMIN dev sang!</div>
-        <div class="terminal-line">> System initialized at: 2023-11-05 14:30:17</div>
-        <div class="terminal-line">> Security status: <span style="color:#0f0;">ENCRYPTED</span></div>
-        <div class="terminal-line">> Connection established: <span style="color:#0f0;">SECURE</span></div>
-        <div class="terminal-line">> Type 'help' for available commands</div>
-        <div class="terminal-line">> _</div>
-      </div>
-      
-      <div class="terminal-input">
-        <span class="terminal-prompt">></span>
-        <input type="text" class="terminal-input-field" placeholder="Type command here..." id="terminal-input">
-      </div>
-      
-      <div class="hacker-buttons">
-        <button class="hack-btn" onclick="simulateHack('facebook')">Hack Facebook</button>
-        <button class="hack-btn" onclick="simulateHack('tiktok')">Buff TikTok</button>
-        <button class="hack-btn" onclick="simulateHack('instagram')">Tăng Follow</button>
-        <button class="hack-btn" onclick="clearTerminal()">Clear Terminal</button>
-      </div>
-      
-      <div class="notes-section">
-  <div class="notes-title" onclick="window.location.href='https://sf-static.upanhlaylink.com/img/image_20250825f9fc5c7fac5020f603f67772c6cb1fff.jpg'">
-  GHI CHÚ CÁ NHÂN:
 </div>
 
-  <textarea class="notes-input" id="hacker-notes">Ghi chú những điều cần nhớ...pass:sangdev201127</textarea>
-  <button class="notes-save" onclick="saveNotes()">Lưu ghi chú</button>
-</div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  </section>
+<script>
+// === CẤU HÌNH FIREBASE (DÙNG CHUNG VỚI SHOP CHÍNH) ===
+const firebaseConfig = {
+  apiKey: "AIzaSyCTnc0HQWRxsHDEWlJ4ZT9yqKDbC8unm00",
+  authDomain: "adminshop-c2ac2.firebaseapp.com",
+  projectId: "adminshop-c2ac2",
+  storageBucket: "adminshop-c2ac2.firebasestorage.app",
+  messagingSenderId: "583532399934",
+  appId: "1:583532399934:web:23a213d578f3144053706f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-  <script>
-    // ===== Theme Toggle =====
-    const root = document.documentElement;
-    const themeBtn = document.getElementById('theme');
-    const themeBtn2 = document.getElementById('theme2');
-    const stored = localStorage.getItem('theme');
-    if(stored){ document.documentElement.setAttribute('data-theme', stored); }
-    function toggleTheme(){
-      const cur = document.documentElement.getAttribute('data-theme');
-      const next = cur === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+let currentUser = null;
+let editingId = null;
+
+// Đăng nhập Admin
+async function adminLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPass').value;
+  if (!email || !pass) return alert('Nhập đầy đủ thông tin');
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const snap = await db.collection('users').doc(cred.user.uid).get();
+    if (!snap.exists || snap.data().role !== 'admin') {
+      auth.signOut();
+      return alert('Bạn không phải Admin!');
     }
-    themeBtn.addEventListener('click', toggleTheme);
-    themeBtn2.addEventListener('click', toggleTheme);
+    currentUser = cred.user;
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    loadProducts();
+    loadUsers();
+  } catch (err) {
+    alert('Lỗi đăng nhập: ' + err.message);
+  }
+}
 
-    // ===== Search shortcuts =====
-    const q = document.getElementById('q');
-    const clearBtn = document.getElementById('clear');
-    document.addEventListener('keydown', (e)=>{
-      if((e.key === '/' || (e.ctrlKey||e.metaKey) && e.key.toLowerCase() === 'k')){
-        e.preventDefault(); q.focus(); q.select();
-      }
+// Đăng xuất
+function adminLogout() {
+  auth.signOut();
+  location.reload();
+}
+
+// Lưu / Cập nhật sản phẩm
+async function saveProduct() {
+  if (!currentUser) return;
+
+  const name = document.getElementById('pName').value.trim();
+  const desc = document.getElementById('pDesc').value.trim();
+  const price = parseInt(document.getElementById('pPrice').value);
+  const stock = parseInt(document.getElementById('pStock').value);
+  const downloadURL = document.getElementById('pDownloadURL').value.trim();
+  const selectedCats = Array.from(document.getElementById('pCategory').selectedOptions).map(o => o.value);
+  const imageLinks = document.getElementById('pImageLinks').value.trim().split('\n').map(l => l.trim()).filter(l => l);
+
+  if (!name || !desc || !price || !stock || !downloadURL || imageLinks.length === 0 || selectedCats.length === 0) {
+    return alert('Vui lòng điền đầy đủ thông tin và ít nhất 1 ảnh demo!');
+  }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.innerText = editingId ? 'Đang cập nhật...' : 'Đang thêm...';
+
+  try {
+    const data = {
+      name, desc, price, stock, downloadURL,
+      images: imageLinks,
+      category: selectedCats.length === 1 ? selectedCats[0] : selectedCats, // lưu mảng nếu nhiều
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (editingId) {
+      await db.collection('products').doc(editingId).update(data);
+      alert('Cập nhật thành công!');
+    } else {
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('products').add(data);
+      alert('Thêm sản phẩm thành công!');
+    }
+
+    resetForm();
+    loadProducts();
+  } catch (err) {
+    alert('Lỗi: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = editingId ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm';
+  }
+}
+
+// Reset form
+function resetForm() {
+  editingId = null;
+  document.getElementById('formTitle').innerText = 'Thêm sản phẩm mới';
+  document.getElementById('saveBtn').innerText = 'Thêm sản phẩm';
+  document.querySelectorAll('#pName,#pDesc,#pPrice,#pStock,#pDownloadURL,#pImageLinks').forEach(el => el.value = '');
+  document.getElementById('pCategory').selectedIndex = -1;
+  document.getElementById('imagePreview').innerHTML = '';
+}
+
+// Hủy chỉnh sửa
+function cancelEdit() {
+  resetForm();
+}
+
+// Preview ảnh
+document.getElementById('pImageLinks').addEventListener('input', function() {
+  const links = this.value.trim().split('\n').filter(l => l.trim());
+  const preview = document.getElementById('imagePreview');
+  if (links.length === 0) {
+    preview.innerHTML = '';
+    return;
+  }
+  preview.innerHTML = links.map(link => 
+    `<img src="${link}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;margin:5px;" onerror="this.src='https://via.placeholder.com/100?text=Error'">`
+  ).join('');
+});
+
+// Load sản phẩm
+async function loadProducts() {
+  const container = document.getElementById('productsList');
+  container.innerHTML = '<p style="grid-column:1/-1;text-align:center;">Đang tải sản phẩm...</p>';
+
+  try {
+    const snap = await db.collection('products').orderBy('createdAt', 'desc').get();
+    if (snap.empty) {
+      container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#aaa;">Chưa có sản phẩm nào</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    snap.forEach(doc => {
+      const p = doc.data();
+      const cats = Array.isArray(p.category) ? p.category : [p.category || 'premium'];
+      const badges = cats.map(c => `<span class="category-badge category-${c}">${getCatName(c)}</span>`).join('');
+
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = `
+        <h3>${p.name}</h3>
+        <div style="margin:10px 0;">${badges}</div>
+        <p><strong>Giá:</strong> ${p.price.toLocaleString()}đ | <strong>Còn:</strong> ${p.stock}</p>
+        <p><strong>Link tải:</strong> <a href="${p.downloadURL}" target="_blank">Xem</a></p>
+        <div style="margin:15px 0;display:flex;gap:8px;flex-wrap:wrap;">
+          ${p.images?.slice(0,5).map(img => `<img src="${img}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;">`).join('') || ''}
+          ${p.images?.length > 5 ? `<span style="align-self:center;color:#888;">+${p.images.length-5} ảnh</span>` : ''}
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+          <button class="btn btn-success" onclick="editProduct('${doc.id}')">Sửa</button>
+          <button class="btn btn-danger" onclick="deleteProduct('${doc.id}', '${p.name}')">Xóa</button>
+        </div>
+      `;
+      container.appendChild(div);
     });
-    clearBtn.addEventListener('click', ()=>{ q.value=''; q.focus(); });
+  } catch (err) {
+    container.innerHTML = '<p style="color:#f55;">Lỗi tải sản phẩm: ' + err.message + '</p>';
+  }
+}
 
-    // ===== Mobile Drawer =====
-    const drawer = document.getElementById('drawer');
-    const hamburger = document.getElementById('hamburger');
-    const closeDrawer = document.getElementById('closeDrawer');
+// Sửa sản phẩm
+window.editProduct = async (id) => {
+  const snap = await db.collection('products').doc(id).get();
+  const p = snap.data();
+  if (!snap.exists) return alert('Không tìm thấy sản phẩm!');
 
-    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); hamburger.classList.add('active'); hamburger.setAttribute('aria-expanded','true'); }
-    function closeDrawerFn(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); hamburger.classList.remove('active'); hamburger.setAttribute('aria-expanded','false'); }
+  editingId = id;
+  document.getElementById('formTitle').innerText = 'Chỉnh sửa sản phẩm';
+  document.getElementById('saveBtn').innerText = 'Cập nhật sản phẩm';
 
-    hamburger.addEventListener('click', ()=>{
-      if(drawer.classList.contains('open')) closeDrawerFn(); else openDrawer();
-    });
-    closeDrawer.addEventListener('click', closeDrawerFn);
-    drawer.addEventListener('click', (e)=>{ if(e.target === drawer) closeDrawerFn(); });
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pDesc').value = p.desc;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pStock').value = p.stock;
+  document.getElementById('pDownloadURL').value = p.downloadURL || '';
+  document.getElementById('pImageLinks').value = (p.images || []).join('\n');
 
-    // ===== Accessibility: trap focus inside drawer when open =====
-    drawer.addEventListener('keydown', (e)=>{
-      if(e.key !== 'Tab') return;
-      const focusables = drawer.querySelectorAll('a, button, input');
-      if(!focusables.length) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-    });
+  // Select danh mục
+  const select = document.getElementById('pCategory');
+  Array.from(select.options).forEach(opt => {
+    opt.selected = Array.isArray(p.category) 
+      ? p.category.includes(opt.value) 
+      : p.category === opt.value;
+  });
 
-    // ===== Hacker Terminal Functionality =====
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalContent = document.querySelector('.terminal-content');
-    
-    // Load saved notes
-    const hackerNotes = document.getElementById('hacker-notes');
-    const savedNotes = localStorage.getItem('hackerNotes');
-    if (savedNotes) {
-      hackerNotes.value = savedNotes;
-    }
-    
-    // Save notes function
-    function saveNotes() {
-      localStorage.setItem('hackerNotes', hackerNotes.value);
-      addTerminalLine('> Notes saved successfully!');
-    }
-    
-    // Add line to terminal
-    function addTerminalLine(text) {
-      const line = document.createElement('div');
-      line.className = 'terminal-line';
-      line.textContent = text;
-      terminalContent.appendChild(line);
-      
-      // Scroll to bottom
-      terminalContent.scrollTop = terminalContent.scrollHeight;
-    }
-    
-    // Clear terminal
-    function clearTerminal() {
-      terminalContent.innerHTML = '';
-      addTerminalLine('> Terminal cleared.');
-      addTerminalLine('> Type "help" for available commands.');
-    }
-    
-    // Simulate hacking
-    function simulateHack(platform) {
-      addTerminalLine(`> Initiating ${platform.toUpperCase()} protocol...`);
-      
-      let messages = [];
-      
-      switch(platform) {
-        case 'facebook':
-          messages = [
-            '> Bypassing FB security...',
-            '> Access token generated: ********',
-            '> Retrieving data...',
-            '> Warning: xin admin bot đi có!',
-            '> Facebook "hack" simulation complete!'
-          ];
-          break;
-        case 'tiktok':
-          messages = [
-            '> Connecting to TikTok API...',
-            '> Analyzing user engagement...',
-            '> Buffing views & likes...',
-            '> Warning: xin admin bot đi có!',
-            '> TikTok buff simulation complete!'
-          ];
-          break;
-        case 'instagram':
-          messages = [
-            '> Accessing Instagram servers...',
-            '> Generating followers...',
-            '> Updating profile metrics...',
-            '> Warning: xin admin bot đi có!',
-            '> Instagram follow simulation complete!'
-          ];
-          break;
-      }
-      
-      // Animate the hacking process
-      let delay = 500;
-      messages.forEach((msg, index) => {
-        setTimeout(() => {
-          addTerminalLine(msg);
-          
-          // Final message
-          if (index === messages.length - 1) {
-            setTimeout(() => {
-              addTerminalLine('> Remember: Hacking is illegal! This is just a simulation.');
-            }, 800);
-          }
-        }, delay);
-        delay += 800;
-      });
-    }
-    
-    // Terminal input handling
-    terminalInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        const command = terminalInput.value.trim().toLowerCase();
-        terminalInput.value = '';
-        
-        addTerminalLine('> ' + command);
-        
-        switch(command) {
-          case 'help':
-            addTerminalLine('> Available commands:');
-            addTerminalLine('> - help: Show this help');
-            addTerminalLine('> - clear: Clear terminal');
-            addTerminalLine('> - status: Show system status');
-            addTerminalLine('> Use buttons for "hacking" simulations');
-            break;
-          case 'clear':
-            clearTerminal();
-            break;
-          case 'status':
-            addTerminalLine('> System status: NORMAL');
-            addTerminalLine('> Security: ENCRYPTED');
-            addTerminalLine('> Connection: SECURE');
-            break;
-          case '':
-            // Do nothing for empty command
-            break;
-          default:
-            addTerminalLine('> Unknown command: ' + command);
-            addTerminalLine('> Type "help" for available commands');
-        }
-      }
+  document.getElementById('pImageLinks').dispatchEvent(new Event('input'));
+  scrollTo(0, 0);
+};
+
+// Xóa sản phẩm
+window.deleteProduct = async (id, name) => {
+  if (!confirm(`Xóa sản phẩm "${name}"?\nHành động này không thể hoàn tác!`)) return;
+  try {
+    await db.collection('products').doc(id).delete();
+    alert('Đã xóa sản phẩm!');
+    loadProducts();
+  } catch (err) {
+    alert('Lỗi xóa: ' + err.message);
+  }
+};
+
+// Tên danh mục đẹp
+function getCatName(cat) {
+  const map = {all:'Tất cả', premium:'Trả phí', free:'Miễn phí', love:'Tình yêu', '3js':'ThreeJS', wed:'Website'};
+  return map[cat] || cat;
+}
+
+// === QUẢN LÝ NGƯỜI DÙNG (giống hệt trang chính) ===
+async function loadUsers() {
+  const container = document.getElementById('usersList');
+  const search = document.getElementById('searchUser').value.toLowerCase().trim();
+  container.innerHTML = '<p>Đang tải người dùng...</p>';
+
+  try {
+    const snap = await db.collection('users').get();
+    let html = '';
+
+    snap.forEach(doc => {
+      const u = doc.data();
+      const uid = doc.id;
+      if (search && !u.username?.toLowerCase().includes(search) && 
+          !u.email?.toLowerCase().includes(search) && 
+          !uid.includes(search)) return;
+
+      const isAdmin = u.role === 'admin';
+
+      html += `
+        <div class="card" style="margin:15px 0;padding:20px;">
+          <strong>${u.username || 'Chưa đặt tên'}</strong> (${u.email})<br>
+          UID: <code>${uid}</code><br>
+          Số dư: <strong style="color:#0f0;">${(u.balance||0).toLocaleString()}đ</strong> | 
+          Role: <strong style="color:${isAdmin?'#ff00ff':'#00ff88'}">${(u.role||'user').toUpperCase()}</strong>
+          <div style="margin-top:12px;">
+            ${!isAdmin ? `<button class="btn btn-success" onclick="setRole('${uid}','admin')">Thăng Admin</button>` : 
+             `<button class="btn" style="background:#ff9500;" onclick="setRole('${uid}','user')">Hạ User</button>`}
+            <button class="btn btn-danger" onclick="fineUser('${uid}','${(u.username||uid)}')">Phạt tiền</button>
+            <button class="btn btn-danger" onclick="deleteUser('${uid}','${(u.username||uid)}')">Xóa TK</button>
+          </div>
+        </div>`;
     });
 
-    // ===== Tool Functions =====
-    function hackFacebook() {
-      const input = document.getElementById('fb-input').value;
-      const result = document.getElementById('fb-result');
-      
-      if (!input) {
-        result.innerHTML = '<span style="color: #ff4757;">Lỗi: Vui lòng nhập URL Facebook hoặc ID người dùng</span>';
-        return;
-      }
-      
-      result.innerHTML = 'Đang quét tài khoản Facebook...';
-      
-      // Simulate hacking process
-      setTimeout(() => {
-        result.innerHTML = 'Đang bỏ qua lớp bảo mật...';
-      }, 1500);
-      
-      setTimeout(() => {
-        result.innerHTML = 'Đang thu thập dữ liệu...';
-      }, 3000);
-      
-      setTimeout(() => {
-        result.innerHTML = `
-          <strong>Kết quả hack Facebook:</strong><br>
-          - Tên người dùng: **********<br>
-          - Email: *************@*******<br>
-          - Số điện thoại: ********<br>
-          - Bạn bè: 847<br>
-          - Bài viết gần đây: 23<br>
-          <span style="color: #0f0; margin-top: 10px; display: block;">
-            Bẻ khóa thành công! vui lòng liên hệ admin để dc nhận giá ưu đải
-          </span>
-        `;
-      }, 4500);
-    }
-    
-    function buffTikTok() {
-      const input = document.getElementById('tiktok-input').value;
-      const result = document.getElementById('tiktok-result');
-      
-      if (!input) {
-        result.innerHTML = '<span style="color: #ff4757;">Lỗi: Vui lòng nhập @username TikTok</span>';
-        return;
-      }
-      
-      result.innerHTML = 'Đang kết nối đến TikTok API...';
-      
-      // Simulate buffing process
-      setTimeout(() => {
-        result.innerHTML = 'Đang phân tích tài khoản...';
-      }, 1500);
-      
-      setTimeout(() => {
-        result.innerHTML = 'Đang tăng lượt xem và like...';
-      }, 3000);
-      
-      setTimeout(() => {
-        result.innerHTML = `
-          <strong>Kết quả buff TikTok:</strong><br>
-          - Tài khoản: ${input}<br>
-          - Lượt xem tăng: 14,287<br>
-          - Like tăng: 2,458<br>
-          - Người theo dõi tăng: 384<br>
-          - Thời gian: 15 phút<br>
-          <span style="color: #0f0; margin-top: 10px; display: block;">
-            Buff thành công! vui lòng liên hệ admin để dc nhận giá ưu đải
-          </span>
-        `;
-      }, 4500);
-    }
-    
-    function hackInstagram() {
-      const input = document.getElementById('ig-input').value;
-      const result = document.getElementById('ig-result');
-      
-      if (!input) {
-        result.innerHTML = '<span style="color: #ff4757;">Lỗi: Vui lòng nhập @username Instagram</span>';
-        return;
-      }
-      
-      result.innerHTML = 'Đang kết nối đến Instagram...';
-      
-      // Simulate hacking process
-      setTimeout(() => {
-        result.innerHTML = 'Đang vượt qua xác thực 2 lớp...';
-      }, 1500);
-      
-      setTimeout(() => {
-        result.innerHTML = 'Đang thu thập thông tin...';
-      }, 3000);
-      
-      setTimeout(() => {
-        result.innerHTML = `
-          <strong>Kết quả hack Instagram:</strong><br>
-          - Tài khoản: ${input}<br>
-          - Người theo dõi: 12,847<br>
-          - Đang theo dõi: 483<br>
-          - Bài viết: 147<br>
-          - Email: ${input.replace('@', '')}@gmail.com<br>
-          <span style="color: #0f0; margin-top: 10px; display: block;">
-            Bẻ khóa thành công! vui lòng liên hệ admin để dc nhận giá ưu đải.
-          </span>
-        `;
-      }, 4500);
-    }
-    
-    function hackWifi() {
-      const input = document.getElementById('wifi-input').value;
-      const result = document.getElementById('wifi-result');
-      
-      if (!input) {
-        result.innerHTML = '<span style="color: #ff4757;">Lỗi: Vui lòng nhập tên mạng WiFi</span>';
-        return;
-      }
-      
-      result.innerHTML = 'Đang quét mạng WiFi xung quanh...';
-      
-      // Simulate hacking process
-      setTimeout(() => {
-        result.innerHTML = 'Đã tìm thấy mạng ' + input;
-      }, 1500);
-      
-      setTimeout(() => {
-        result.innerHTML = 'Đang thử bẻ khóa mật khẩu...';
-      }, 3000);
-      
-      setTimeout(() => {
-        result.innerHTML = `
-          <strong>Kết quả bẻ khóa WiFi:</strong><br>
-          - Tên mạng: ${input}<br>
-          - Độ mạnh tín hiệu: 78%<br>
-          - Bảo mật: WPA2<br>
-          - Mật khẩu: ${input.replace(' ', '').toLowerCase()}123<br>
-          - Kênh: 6<br>
-          <span style="color: #0f0; margin-top: 10px; display: block;">
-            Bẻ khóa thành công! vui lòng liên hệ admin để dc nhận giá ưu đải
-        `;
-      }, 4500);
-    }
-  </script>
+    container.innerHTML = html || '<p style="text-align:center;color:#aaa;">Không tìm thấy người dùng nào</p>';
+  } catch (e) {
+    container.innerHTML = '<p style="color:#f55;">Lỗi: ' + e.message + '</p>';
+  }
+}
+
+// Các hàm quản lý user (giống hệt file chính)
+window.setRole = async (uid, role) => {
+  if (!confirm(`Thay đổi quyền thành ${role.toUpperCase()}?`)) return;
+  await db.collection('users').doc(uid).update({role});
+  alert('Đã cập nhật quyền!');
+  loadUsers();
+};
+
+window.fineUser = async (uid, name) => {
+  const amount = prompt(`Phạt bao nhiêu tiền từ ${name}?`);
+  if (!amount || isNaN(amount) || amount <= 0) return;
+  const reason = prompt('Lý do phạt:', 'Vi phạm');
+  if (!reason) return;
+  if (!confirm(`Phạt ${parseInt(amount).toLocaleString()}đ?`)) return;
+
+  await db.runTransaction(async t => {
+    const ref = db.collection('users').doc(uid);
+    const snap = await t.get(ref);
+    if ((snap.data().balance || 0) < amount) throw new Error('Không đủ tiền');
+    t.update(ref, {balance: firebase.firestore.FieldValue.increment(-parseInt(amount))});
+    t.set(db.collection('history').doc(), {uid, productName:`[PHẠT] ${reason}`, price:parseInt(amount), key:'FINE', time:firebase.firestore.FieldValue.serverTimestamp()});
+  });
+  alert('Đã phạt thành công!');
+  loadUsers();
+};
+
+window.deleteUser = async (uid, name) => {
+  if (!confirm(`XÓA HOÀN TOÀN tài khoản "${name}"? Không thể khôi phục!`)) return;
+  const pass = prompt('Nhập mật khẩu bảo mật:');
+  if (pass !== 'sangdev123') return alert('Sai mật khẩu!');
+
+  // Xóa lịch sử, pending, rồi user
+  const h = await db.collection('history').where('uid','==',uid).get();
+  const batch = db.batch();
+  h.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+
+  await db.collection('users').doc(uid).delete();
+  alert('Đã xóa tài khoản!');
+  loadUsers();
+};
+
+document.getElementById('searchUser').addEventListener('input', loadUsers);
+</script>
 </body>
 </html>
