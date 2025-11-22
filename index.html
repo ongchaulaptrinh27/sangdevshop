@@ -455,7 +455,16 @@ audio.onplay = audio.onpause = updatePlayPauseIcon;
   <!-- Content -->
   <div class="container">
     <!-- Auth -->
-   
+    <div id="authSection" class="section card" style="max-width:420px;margin:40px auto;">
+      <h2 id="authTitle">Đăng nhập</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="pass" placeholder="Mật khẩu" required>
+      <input type="text" id="username" placeholder="Tên hiển thị (đăng ký)" class="hidden">
+      <button class="btn btn-primary" id="authAction">Đăng nhập</button>
+      <p style="text-align:center;margin-top:10px;">
+        <a href="#" id="switchAuth">Chưa có tài khoản? Đăng ký ngay</a>
+      </p>
+    </div>
     <div id="loading" class="section">Đang tải sản phẩm...</div>
    
     <div id="productsSection" class="section active">
