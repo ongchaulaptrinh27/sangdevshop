@@ -26,7 +26,7 @@ nav a:hover{color:#00ffff;}
 .btn-primary:hover{background:#00cccc;}
 .btn-danger{background:#ff2d55;}
 .btn-success{background:#00ff88;color:#000;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px;margin-top:90px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px;margin-top:20px;}
 h1,h2,h3{text-align:center;margin:20px 0;font-size:2.2em;background:linear-gradient(45deg,#00ffff,#ff00ff);-webkit-background-clip:text;color:transparent;}
 input,textarea,select{padding:12px;border-radius:8px;border:none;background:rgba(255,255,255,0.1);color:#fff;margin:8px 0;width:100%;outline:none;}
 .hidden{display:none !important;}
@@ -80,7 +80,12 @@ code{background:#000;padding:2px 8px;border-radius:4px;}
 }
 .submenu a:hover {color:#00ffff;background:rgba(0,255,255,0.1);}
 /* Main content */
-.main-wrapper {margin-left:280px;min-height:100vh;transition:0.4s;}
+.main-wrapper {
+  margin-left:280px;
+  min-height:100vh;
+  transition:0.4s;
+  padding-top:10px;   /* THÊM DÒNG NÀY */
+}
 header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40px;text-align:center;border-bottom:1px solid rgba(0,255,255,0.2);}
 .tagline {max-width:900px;margin:25px auto;line-height:1.8;font-size:1.1em;color:#ddd;}
 .tagline a {color:#00ffff;text-decoration:underline;}
@@ -110,7 +115,7 @@ header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40
 .contact-info img {width:140px;height:140px;border-radius:50%;object-fit:cover;box-shadow:0 4px 20px rgba(0,255,255,0.3);}
 .contact-info a {margin:8px;background:#333;padding:12px 20px;border-radius:12px;}
 /* Category & Grid */
-.category-filter {display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:30px 20px;}
+.category-filter {display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:0 20px;margin:15px 0 25px;}
 .category-btn {padding:10px 24px;border:2px solid #00ffff;background:transparent;color:#00ffff;border-radius:50px;cursor:pointer;transition:0.3s;}
 .category-btn.active, .category-btn:hover {background:#00ffff;color:#000;font-weight:600;}
 .products-grid {
@@ -275,11 +280,168 @@ header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40
     <div class="tagline">
       <p>Chào mừng bạn đến với dịch vụ của tôi – Một lập trình viên yêu thích xây dựng website sáng tạo</p>
       <p>Mình chuyên phát triển website, ứng dụng với giao diện đẹp mắt và tối ưu hiệu suất</p>
-      <p>Nếu tải về không iết sữ dụng thì liên hệ admin để hộ trở miễng phí </p>
+      <p>Nếu tải về không iết sữ dụng thì liên hệ admin để hộ trở miễn phí </p>
       <p>Bạn có thể xem thêm về mình <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank">tại đây</a></p>
       <p>Tạo website tự động <a href="https://bot-five-pi.vercel.app/" target="_blank">tại đây</a></p>
     </div>
+    <div id="musicPerfect">
+  <div class="bar">
+    <!-- BÊN TRÁI: ký tự âm nhạc -->
+    <div class="music-note">♪</div>
+
+    <!-- CHÍNH GIỮA: tên bài hát -->
+    <div class="song-title" id="title">♪ Nhạc Chill #1 - SANG DEV SHOP ♪</div>
+
+    <!-- BÊN PHẢI: 3 nút Lùi - Play/Pause - Tới -->
+    <div class="right-controls">
+      <div class="ctrl" id="prev">◀</div>
+      <div class="ctrl play" id="playBtn">▶</div> <!-- Ban đầu là ▶ -->
+      <div class="ctrl" id="next">▶</div>
+    </div>
+  </div>
+</div>
+
+<audio id="audio" preload="auto"></audio>
+
+<style>
+#musicPerfect {width:100%;max-width:900px;margin:15px auto;padding:0 15px}
+.bar {
+  height:56px;
+  background:rgba(10,15,30,0.95);
+  border:1px solid #00ffff;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  box-shadow:0 0 25px rgba(0,255,255,0.35);
+  position:relative;
+  overflow:hidden;
+}
+.bar::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#00ffff,transparent);
+  animation:glow 4s linear infinite;
+}
+@keyframes glow {0%,100%{opacity:0.6}50%{opacity:1}}
+
+.music-note {
+  font-size:30px;
+  color:#00ffff;
+  text-shadow:0 0 15px #00ffff;
+  animation:pulse 3s infinite;
+}
+@keyframes pulse {0%,100%{opacity:0.7}50%{opacity:1}}
+
+.song-title {
+  position:absolute;left:50%;transform:translateX(-50%);
+  color:#00ffff;font-size:15px;font-weight:600;
+  white-space:nowrap;text-shadow:0 0 10px #00ffff;
+  pointer-events:none;
+}
+
+.right-controls {display:flex;gap:16px;align-items:center}
+.ctrl {
+  width:42px;height:42px;
+  background:rgba(0,255,255,0.2);
+  border:2px solid #00ffff;
+  border-radius:50%;
+  color:#00ffff;
+  font-size:18px;
+  font-weight:bold;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  transition:all .3s;
+}
+.ctrl:hover {background:#00ffff;color:#000;transform:scale(1.15)}
+.ctrl.play {font-size:22px}
+
+/* Mobile */
+@media(max-width:768px){
+  .bar{height:50px;padding:0 20px}
+  .song-title{font-size:13px}
+  .music-note{font-size:26px}
+  .ctrl{width:38px;height:38px;font-size:16px}
+  .ctrl.play{font-size:20px}
+}
+</style>
+
+<script>
+// Danh sách nhạc (thay bằng link thật của bạn)
+const playlist = [
+  "TikDown.com_TikTok_Media_002_0597ce2c603da8d81843864ee15722fd.mp3",
+  "Tikviewer_NHC_LOFI_CHILL_D_NG_aveeplayermusicqdmusicqdmusic1_1763800893902.mp3",
+  "TikDown.com_TikTok_Media_002_a36a703cbabc0874146559388b1ec2f7.mp3"
+  // Thêm bao nhiêu bài tùy thích
+];
+
+let index = 0;
+const audio = document.getElementById("audio");
+const title = document.getElementById("title");
+const playBtn = document.getElementById("playBtn");
+
+// Hàm cập nhật tiêu đề và nguồn nhạc
+function loadTrack() {
+  const trackNumber = (index % playlist.length) + 1;
+  audio.src = playlist[index % playlist.length];
+  title.innerHTML = `♪ Nhạc Chill #${trackNumber} - SANG DEV SHOP ♪`;
+}
+
+// Hàm chuyển bài và tự động phát
+function playTrack() {
+  loadTrack();
+  audio.play();
+  playBtn.textContent = "⏸";  // Đang phát → hiện nút pause
+}
+
+// Hàm cập nhật icon Play/Pause chính xác
+function updatePlayPauseIcon() {
+  if (audio.paused) {
+    playBtn.textContent = "▶";
+  } else {
+    playBtn.textContent = "⏸";
+  }
+}
+
+// Khởi động lần đầu
+playTrack();
+
+// Nút Play/Pause
+playBtn.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+  } else {
+    audio.pause();
+  }
+  updatePlayPauseIcon();
+};
+
+// Nút Previous
+document.getElementById("prev").onclick = () => {
+  index--;
+  if (index < 0) index = playlist.length - 1;
+  playTrack();
+};
+
+// Nút Next
+document.getElementById("next").onclick = () => {
+  index++;
+  playTrack();
+};
+
+// Khi bài hát kết thúc → tự động chuyển bài tiếp theo
+audio.onended = () => {
+  index++;
+  playTrack();
+};
+
+// Cập nhật icon ngay cả khi người dùng tua, tạm dừng bằng phím cách, v.v.
+audio.onplay = audio.onpause = updatePlayPauseIcon;
+</script>
   </header>
+  
+  
   <!-- Category Filter -->
   <div class="category-filter">
     <button class="category-btn active" data-category="all">Tất cả</button>
@@ -289,19 +451,11 @@ header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40
     <button class="category-btn" data-category="3js">ThreeJS</button>
     <button class="category-btn" data-category="wed">Website</button>
   </div>
+  
   <!-- Content -->
   <div class="container">
     <!-- Auth -->
-    <div id="authSection" class="section card" style="max-width:420px;margin:40px auto;">
-      <h2 id="authTitle">Đăng nhập</h2>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="pass" placeholder="Mật khẩu" required>
-      <input type="text" id="username" placeholder="Tên hiển thị (đăng ký)" class="hidden">
-      <button class="btn btn-primary" id="authAction">Đăng nhập</button>
-      <p style="text-align:center;margin-top:10px;">
-        <a href="#" id="switchAuth">Chưa có tài khoản? Đăng ký ngay</a>
-      </p>
-    </div>
+   
     <div id="loading" class="section">Đang tải sản phẩm...</div>
    
     <div id="productsSection" class="section active">
@@ -1437,5 +1591,6 @@ document.addEventListener('click', function(e) {
   }
 }, { passive: true });
 </script>
+
 </body>
 </html> 
