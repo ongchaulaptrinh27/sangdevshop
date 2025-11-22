@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -274,7 +275,7 @@ header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40
     <div class="tagline">
       <p>Chào mừng bạn đến với dịch vụ của tôi – Một lập trình viên yêu thích xây dựng website sáng tạo</p>
       <p>Mình chuyên phát triển website, ứng dụng với giao diện đẹp mắt và tối ưu hiệu suất</p>
-      <p>Chọn sản phẩm rồi bấm tải về, sau đó liên hệ admin và nhớ nói tên hoặc số hiệu sản phẩm</p>
+      <p>Nếu tải về không iết sữ dụng thì liên hệ admin để hộ trở miễng phí </p>
       <p>Bạn có thể xem thêm về mình <a href="https://www.facebook.com/profile.php?id=61574167490098" target="_blank">tại đây</a></p>
       <p>Tạo website tự động <a href="https://bot-five-pi.vercel.app/" target="_blank">tại đây</a></p>
     </div>
@@ -376,6 +377,15 @@ header {background:rgba(20,20,40,0.8);backdrop-filter:blur(12px);padding:30px 40
           <label><strong>Link ảnh demo (mỗi dòng 1 link)</strong></label>
           <textarea id="pImageLinks" rows="4" placeholder="https://example.com/image1.jpg\nhttps://example.com/image2.png"></textarea>
         </div>
+        <div style="margin:15px 0; padding:12px; background:rgba(0,255,255,0.1); border-radius:8px;">
+  <label style="display:flex; align-items:center; cursor:pointer; font-weight:600; color:#00ffff;">
+    <input type="checkbox" id="pPinned" style="width:20px; height:20px; margin-right:12px; accent-color:#00ffff;">
+    <span><i class="fas fa-thumbtack"></i> Ghim sản phẩm lên đầu (hiển thị đầu tiên)</span>
+  </label>
+  <p style="font-size:0.85em; color:#aaa; margin:5px 0 0 32px;">
+    Sản phẩm được ghim sẽ luôn xuất hiện ở vị trí đầu tiên trong mọi danh mục
+  </p>
+</div>
         <div id="linkPreview" style="margin:10px 0;"></div>
         <div style="margin-top:15px;">
           <button class="btn btn-primary" id="addProductBtn">Thêm sản phẩm mới</button>
@@ -609,7 +619,16 @@ function renderCurrentPage() {
         return p.category === currentCategory;
     });
   
-    const pageItems = filteredProducts.slice(start, end);
+    const pageItems = filteredProducts
+  .sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    // Cùng ghim hoặc cùng không ghim → mới nhất lên trước
+    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
+    return timeB - timeA;
+  })
+  .slice(start, end);
   
     // Nếu không có sản phẩm nào trong danh mục hiện tại
     if (filteredProducts.length === 0) {
@@ -687,6 +706,7 @@ function renderCurrentPage() {
             : `<button class="btn" disabled style="background:#555; opacity:0.7; cursor:not-allowed;">Hết hàng</button>`;
         div.innerHTML = `
             <h3>${p.name}</h3>
+            ${p.pinned ? '<div style="color:#ff00ff; font-size:0.9em; margin:8px 0;"><i class="fas fa-thumbtack"></i> Sản phẩm được ghim</div>' : ''}
             <div style="margin:8px 0;">${categoryBadges}</div>
             ${imagesHTML}
             <p style="margin:12px 0; line-height:1.7; color:#ddd;">${p.desc.replace(/\n/g, '<br>')}</p>
@@ -706,6 +726,7 @@ function renderCurrentPage() {
                 </div>` : ''
             }
         `;
+        
         container.appendChild(div);
     });
     // Cập nhật phân trang theo kết quả lọc
@@ -820,13 +841,26 @@ window.editProduct = async (id) => {
   if (!snap.exists) return alert('Sản phẩm không tồn tại!');
   const p = snap.data();
   editingProductId = id;
-  document.getElementById('pName').value = p.name;
-  document.getElementById('pDesc').value = p.desc;
-  document.getElementById('pPrice').value = p.price;
-  document.getElementById('pStock').value = p.stock;
+
+  document.getElementById('pName').value = p.name || '';
+  document.getElementById('pDesc').value = p.desc || '';
+  document.getElementById('pPrice').value = p.price || '';
+  document.getElementById('pStock').value = p.stock || '';
   document.getElementById('pDownloadURL').value = p.downloadURL || '';
-  document.getElementById('pCategory').value = p.category || 'premium';
   document.getElementById('pImageLinks').value = p.images ? p.images.join('\n') : '';
+
+  // Danh mục (hỗ trợ mảng)
+  if (Array.isArray(p.category)) {
+    setSelectedCategories(p.category);
+  } else if (p.category) {
+    setSelectedCategories([p.category]);
+  } else {
+    setSelectedCategories(['premium']);
+  }
+
+  // Ghim
+  document.getElementById('pPinned').checked = !!p.pinned;
+
   document.getElementById('addProductBtn').innerText = 'Cập nhật sản phẩm';
   document.getElementById('addProductBtn').onclick = updateProduct;
   showSection('adminPanel');
@@ -1333,31 +1367,35 @@ window.editProduct = async (id) => {
 // Sửa hàm saveProduct để lưu nhiều danh mục
 async function saveProduct(isUpdate) {
   if (!isAdmin) return alert('Chỉ admin mới được thêm!');
+
   const name = document.getElementById('pName').value.trim();
   const desc = document.getElementById('pDesc').value.trim();
   const price = parseInt(document.getElementById('pPrice').value);
   const stock = parseInt(document.getElementById('pStock').value);
-  const categories = getSelectedCategories(); // SỬA TỪ category THÀNH categories
+  const categories = getSelectedCategories();
   const downloadURL = document.getElementById('pDownloadURL').value.trim();
   const imageURLs = document.getElementById('pImageLinks').value.trim().split('\n').map(l => l.trim()).filter(l => l.startsWith('http'));
-  // Kiểm tra validation
+  const pinned = document.getElementById('pPinned').checked; // THÊM DÒNG NÀY
+
   if (!name || !desc || isNaN(price) || isNaN(stock) || price < 1000 || stock < 1 || !downloadURL || imageURLs.length === 0) {
     return alert('Phải nhập đầy đủ + ít nhất 1 link ảnh demo hợp lệ!');
   }
-  // Kiểm tra có chọn ít nhất 1 danh mục
-  if (categories.length === 0) {
-    return alert('Phải chọn ít nhất 1 danh mục!');
-  }
+  if (categories.length === 0) return alert('Phải chọn ít nhất 1 danh mục!');
+
   const btn = document.getElementById('addProductBtn');
   btn.disabled = true;
   btn.innerText = isUpdate ? 'Đang cập nhật...' : 'Đang thêm...';
+
   try {
     const productData = {
       name, desc, price, stock,
-      category: categories, // LƯU DẠNG MẢNG
+      category: categories,
       downloadURL,
-      images: imageURLs
+      images: imageURLs,
+      pinned: pinned, // LƯU TRẠNG THÁI GHIM
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
+
     if (isUpdate) {
       await db.collection('products').doc(editingProductId).update(productData);
       alert('Cập nhật thành công!');
@@ -1368,11 +1406,14 @@ async function saveProduct(isUpdate) {
       });
       alert('Thêm sản phẩm thành công!');
     }
-   
+
     // Reset form
-    document.getElementById('pName').value = document.getElementById('pDesc').value = document.getElementById('pPrice').value = document.getElementById('pStock').value = document.getElementById('pDownloadURL').value = '';
-    document.getElementById('pImageLinks').value = '';
-    setSelectedCategories(['premium']); // Reset về mặc định
+    document.getElementById('pName').value = document.getElementById('pDesc').value = 
+    document.getElementById('pPrice').value = document.getElementById('pStock').value = 
+    document.getElementById('pDownloadURL').value = document.getElementById('pImageLinks').value = '';
+    document.getElementById('pPinned').checked = false;
+    setSelectedCategories(['premium']);
+    
     btn.innerText = 'Thêm sản phẩm mới';
     btn.onclick = addProduct;
     editingProductId = null;
